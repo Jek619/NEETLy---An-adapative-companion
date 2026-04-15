@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>NEETly – Sign Up</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+* {
+  box-sizing: border-box;
+  font-family: "Inter", system-ui, sans-serif;
+}
+
+body {
+  height: 100vh;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at top left, #4d79ff 0, #020617 40%);
+  color: #fff;
+}
+
+.wrapper {
+  width: 420px;
+  background: rgba(15, 23, 42, 0.9);
+  padding: 32px;
+  border-radius: 18px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.6);
+  backdrop-filter: blur(18px);
+  animation: fadeIn .6s ease;
+}
+
+.fade-out {
+  animation: fadeOut .35s ease forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeOut {
+  to { opacity: 0; transform: translateY(-10px); }
+}
+
+h2 { text-align: center; margin-bottom: 6px; }
+
+.sub {
+  text-align: center;
+  font-size: 13px;
+  color: #cbd5f5;
+  margin-bottom: 20px;
+}
+
+label { font-size: 13px; color: #d1ddff; }
+
+.input-group { margin-bottom: 14px; }
+
+input, select {
+  width: 100%;
+  padding: 11px 12px;
+  margin-top: 5px;
+  border-radius: 10px;
+  border: none;
+  background: rgba(148,163,255,.18);
+  color: #ffffff;
+  font-size: 14px;
+}
+
+select {
+  width: 100%;
+  padding: 11px 12px;
+  margin-top: 5px;
+  border-radius: 10px;
+  border: none;
+  background: rgba(148,163,255,.18);
+  color: white;
+  font-size: 14px;
+}
+
+select option {
+  background-color: #020617;
+  color: #ffffff;
+}
+
+input::placeholder { color: #94a3c6; }
+
+.strength-bar {
+  height: 6px;
+  background: #1e293b;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-top: 6px;
+}
+
+#pwStrength { height: 100%; width: 0%; transition: .3s; }
+
+.error {
+  font-size: 12px;
+  color: #fb7185;
+  margin-top: 4px;
+  min-height: 14px;
+}
+
+.btn {
+  width: 100%;
+  padding: 11px;
+  border-radius: 10px;
+  border: none;
+  background: #4f46e5;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn:hover { background: #4338ca; }
+
+.switch {
+  margin-top: 16px;
+  text-align: center;
+  font-size: 13px;
+  color: #9ca3ff;
+  cursor: pointer;
+}
+
+.switch span {
+  color: #60a5fa;
+  font-weight: 600;
+}
+.switch span:hover { text-decoration: underline; }
+</style>
+</head>
+
+<body>
+
+<div class="wrapper" id="card">
+  <h2>Create NEETly Account</h2>
+  <div class="sub">Start your adaptive NEET journey</div>
+
+  <form autocomplete="off" onsubmit="event.preventDefault(); signup();">
+
+  <!-- 🔥 Autofill Blockers -->
+  <input type="text" style="display:none">
+  <input type="password" style="display:none">
+
+  <div class="input-group">
+    <label>Full Name</label>
+    <input 
+      id="fullName"
+      name="signupFakeName"
+      placeholder="Your name"
+      autocomplete="off"
+      autocorrect="off"
+      autocapitalize="words"
+      spellcheck="false">
+    <div id="nameError" class="error"></div>
+  </div>
+
+  <div class="input-group">
+    <label>Gender</label>
+    <select id="gender" autocomplete="off">
+      <option value="">Select gender</option>
+      <option value="male">Male</option>
+      <option value="female">Female</option>
+      <option value="other">Other</option>
+    </select>
+    <div id="genderError" class="error"></div>
+  </div>
+
+  <div class="input-group">
+    <label>Email</label>
+    <input 
+      type="email"
+      id="email"
+      name="signupFakeEmail"
+      placeholder="Email"
+      autocomplete="off"
+      autocorrect="off"
+      autocapitalize="off"
+      spellcheck="false">
+    <div id="emailError" class="error"></div>
+  </div>
+
+  <div class="input-group">
+    <label>Password</label>
+    <input 
+      type="password"
+      id="password"
+      name="signupFakePassword"
+      placeholder="Password"
+      autocomplete="new-password">
+    <div class="strength-bar">
+      <div id="pwStrength"></div>
+    </div>
+    <div id="pwError" class="error"></div>
+  </div>
+
+  <div class="input-group">
+    <label>Confirm Password</label>
+    <input 
+      type="password"
+      id="confirmPassword"
+      name="signupFakeConfirm"
+      autocomplete="new-password">
+    <div id="confirmError" class="error"></div>
+  </div>
+
+  <button class="btn" type="submit" id="signupBtn">
+    Sign Up
+  </button>
+
+</form>
+  <div id="status" class="error"></div>
+
+  <div class="switch" onclick="goLogin()">Already have an account? <span>Login</span></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  window.addEventListener("load", () => {
+  document.getElementById("fullName").value = "";
+  document.getElementById("email").value = "";
+  document.getElementById("password").value = "";
+  document.getElementById("confirmPassword").value = "";
+});
+const sb = supabase.createClient(
+  "https://jhtlocpstvvemmjmxdsf.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpodGxvY3BzdHZ2ZW1tam14ZHNmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUzNzE3MDQsImV4cCI6MjA4MDk0NzcwNH0.yhxGHTb1HHCKeDPo5g9SvH6Zgrhr-fx_McXhV7oDhTs"
+);
+
+const signupBtn = document.getElementById("signupBtn");
+const status = document.getElementById("status");
+let isSigningUp = false;
+
+password.addEventListener("input", () => {
+  const v = password.value;
+  let s = 0;
+  if (v.length >= 8) s++;
+  if (/[A-Z]/.test(v)) s++;
+  if (/[0-9]/.test(v)) s++;
+  if (/[^A-Za-z0-9]/.test(v)) s++;
+
+  pwStrength.style.width = (s * 25) + "%";
+  pwStrength.style.background =
+    s < 2 ? "#ef4444" : s < 3 ? "#f59e0b" : "#22c55e";
+});
+
+function capitalizeName(name) {
+  return name.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+}
+
+async function signup() {
+
+  if (isSigningUp) return;
+
+  isSigningUp = true;
+  signupBtn.disabled = true;
+  signupBtn.textContent = "Creating account...";
+
+  status.textContent = "";
+
+  nameError.textContent =
+  genderError.textContent =
+  emailError.textContent =
+  pwError.textContent =
+  confirmError.textContent = "";
+
+  if (!fullName.value.trim()) return fail(nameError, "Enter your name");
+  if (!gender.value) return fail(genderError, "Select gender");
+  if (!email.value) return fail(emailError, "Enter email");
+  if (password.value.length < 8) return fail(pwError, "Minimum 8 characters");
+  if (password.value !== confirmPassword.value)
+    return fail(confirmError, "Passwords do not match");
+
+  const cleanName = capitalizeName(fullName.value.trim());
+
+  try {
+
+    const { data: signUpData, error: signUpError } =
+      await sb.auth.signUp({
+        email: email.value,
+        password: password.value,
+        options: {
+          data: {
+            full_name: cleanName,
+            gender: gender.value
+          }
+        }
+      });
+
+    if (signUpError) {
+      status.textContent = signUpError.message;
+      resetBtn();
+      return;
+    }
+
+    const user = signUpData.user;
+
+if (!user) {
+  status.textContent = "Signup failed. Please try again.";
+  resetBtn();
+  return;
+}
+
+const { error: profileError } = await sb
+  .from("profiles")
+  .upsert({
+    id: user.id,
+    full_name: cleanName,
+    gender: gender.value
+  });
+
+    if (profileError) {
+      console.error(profileError);
+      status.textContent = "Profile creation failed.";
+      resetBtn();
+      return;
+    }
+    await sb.auth.signOut();
+    status.style.color = "#4ade80";
+    status.textContent = "Account created successfully!";
+
+    signupBtn.style.background = "#22c55e";
+    signupBtn.textContent = "Account Created ✓";
+
+    setTimeout(() => {
+      goLogin();
+    }, 2000);
+
+  } catch (err) {
+    status.textContent = "Unexpected error occurred.";
+    console.error(err);
+  }
+}
+
+function fail(el, msg) {
+  el.textContent = msg;
+  resetBtn();
+}
+
+function resetBtn() {
+  isSigningUp = false;
+  signupBtn.disabled = false;
+}
+
+function goLogin() {
+  location.href = "index.html";
+}
+</script>
+
+</body>
+</html>

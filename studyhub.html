@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NEETly Study Hub</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="neetly.css" />
+</head>
+
+<body>
+
+<!-- ======================
+     SIDEBAR
+====================== -->
+<div class="sidebar">
+
+  <!-- TOP -->
+  <div class="sidebar-top">
+    <div class="welcome-box">
+      <span class="welcome-label">Welcome</span>
+      <span class="welcome-name" id="welcomeUser">USER</span>
+    </div>
+  </div>
+
+  <!-- MENU -->
+ <nav class="menu">
+  <a href="dashboard.html" class="menu-item">Dashboard</a>
+  <a href="learn.html" class="menu-item">Learn</a>
+  <a href="studyhub.html" class="menu-item active">Study Hub</a>
+  <a href="chat.html" class="menu-item ">Chat Assistant</a>
+  <a href="notes.html" class="menu-item">Notes</a>
+  <a href="planner.html" class="menu-item">Revision Planner</a>
+</nav>
+
+
+  <!-- BOTTOM -->
+  <div class="sidebar-bottom">
+    <a href="profile.html" class="menu-item profile-link">
+      <span class="profile-badge">👤</span>
+      <span>Profile</span>
+    </a>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </div>
+
+</div>
+
+<!-- ======================
+     MAIN CONTENT
+====================== -->
+<div class="main">
+
+    <h1 class="page-title">🚀 Take a Quiz</h1>
+
+    <div id="quizTab">
+
+        <div class="quiz-wrapper">
+            <div class="quiz-box">
+
+                <div class="form-row">
+                    <label>Subject</label>
+                    <select id="subjectSelect">
+                        <option value="Physics">Physics</option>
+                        <option value="Chemistry">Chemistry</option>
+                        <option value="Biology">Biology</option>
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <label>Topic</label>
+                    <select id="topicSelect">
+                        <option value="">Select Topic</option>
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <label>Difficulty</label>
+                    <select id="difficultySelect">
+                        <option value="easy">Easy</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="hard">Hard</option>
+                    </select>
+                </div>
+
+                <div class="btn-group">
+                    <button id="chooseNone" class="secondary-btn">Random Topic 🎯</button>
+                    <button id="generateQuiz" class="primary-btn">Generate Quiz 🚀</button>
+                </div>
+
+            </div>
+
+            <div id="quizContainer"></div>
+        </div>
+    </div>
+
+</div>
+
+<!-- ======================
+     SCRIPTS
+====================== -->
+
+<!-- QUIZ LOGIC -->
+<script src="quiz.js"></script>
+
+<!-- SUPABASE -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+    const SUPABASE_URL = "https://jhtlocpstvvemmjmxdsf.supabase.co";
+    const SUPABASE_ANON_KEY =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpodGxvY3BzdHZ2ZW1tam14ZHNmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUzNzE3MDQsImV4cCI6MjA4MDk0NzcwNH0.yhxGHTb1HHCKeDPo5g9SvH6Zgrhr-fx_McXhV7oDhTs";
+
+    window.sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+
+    // 🔥 CRITICAL FIX — MAKE USER GLOBAL
+    window.CURRENT_USER = null;
+
+    (async () => {
+        const { data: { session }, error } = await sb.auth.getSession();
+
+        if (error || !session) {
+            window.location.href = "index.html";
+            return;
+        }
+
+        window.CURRENT_USER = session.user;   // ✅ FIXED
+        console.log("Logged in user:", CURRENT_USER.id);
+
+        const name =
+            CURRENT_USER.user_metadata?.full_name ||
+            CURRENT_USER.email.split("@")[0];
+
+        document.getElementById("welcomeUser").innerText = name.toUpperCase();
+    })();
+
+    async function logout() {
+        await sb.auth.signOut();
+        window.location.href = "index.html";
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,61 @@
+{
+  "Physics": {
+    "Motion in a Straight Line": [],
+    "Laws of Motion": [],
+    "Work, Energy & Power": [],
+    "Gravitation": [],
+    "Waves": [],
+    "Optics": [],
+    "Units & Measurements": [],
+    "Circular Motion": [],
+    "Properties of Matter": [],
+    "Heat & Thermodynamics": [],
+    "Oscillations": [],
+    "Electrostatics": [],
+    "Current Electricity": [],
+    "Magnetic Effects of Current": [],
+    "Electromagnetic Induction": [],
+    "Alternating Current": [],
+    "Electromagnetic Waves": [],
+    "Dual Nature of Radiation": [],
+    "Atoms & Nuclei": [],
+    "Semiconductors": []
+  },
+
+  "Chemistry": {
+    "Basic Concepts of Chemistry": [],
+    "Structure of Atom": [],
+    "Periodic Table": [],
+    "Chemical Bonding": [],
+    "States of Matter": [],
+    "Thermodynamics": [],
+    "Equilibrium": [],
+    "Redox Reactions": [],
+    "Electrochemistry": [],
+    "Chemical Kinetics": [],
+    "Surface Chemistry": [],
+    "Organic Chemistry Basics": [],
+    "Hydrocarbons": [],
+    "Haloalkanes & Haloarenes": [],
+    "Alcohols, Phenols & Ethers": [],
+    "Aldehydes & Ketones": [],
+    "Carboxylic Acids": [],
+    "Biomolecules": [],
+    "Polymers": []
+  },
+
+  "Biology": {
+    "Cell — Structure & Function": [],
+    "Biomolecules": [],
+    "Genetics": [],
+    "Plant Physiology": [],
+    "Human Physiology": [],
+    "Reproduction in Organisms": [],
+    "Evolution": [],
+    "Ecology": [],
+    "Biotechnology": [],
+    "Human Health & Diseases": [],
+    "Diversity in Living World": [],
+    "Structural Organization in Animals & Plants": []
+  }
+}

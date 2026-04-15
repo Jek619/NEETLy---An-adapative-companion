@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NEETly Study Hub</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="neetly.css" />
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <div class="logo">
+            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135755.png" />
+            NEETly System
+        </div>
+
+        <div class="menu-item"><a href="dashboard.html">Dashboard</a></div>
+        <div class="menu-item"><a href="learn.html">Learn</a></div>
+        <div class="menu-item active"><a href="studyhub.html">Study Hub</a></div>
+        <div class="menu-item"><a href="chat.html">Chat Assistant</a></div>
+        <div class="menu-item"><a href="planner.html">Revision Planner</a></div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main">
+
+        <h1 class="title">Generate AI-Powered Quiz</h1>
+
+        <div id="quizTab">
+
+            <!-- QUIZ INPUT CARD -->
+            <div class="quiz-wrapper">
+                <div class="quiz-box">
+
+                    <!-- SUBJECT -->
+                    <div class="form-row">
+                        <label>Subject</label>
+                        <select id="subjectSelect">
+                            <option value="Physics">Physics</option>
+                            <option value="Chemistry">Chemistry</option>
+                            <option value="Biology">Biology</option>
+                        </select>
+                    </div>
+
+                    <!-- TOPIC -->
+                    <div class="form-row">
+                        <label>Topic</label>
+                        <select id="topicSelect">
+                            <option value="">Select Topic</option>
+                        </select>
+                    </div>
+
+                    <!-- DIFFICULTY -->
+                    <div class="form-row">
+                        <label>Difficulty</label>
+                        <select id="difficultySelect">
+                            <option value="easy">Easy</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="hard">Hard</option>
+                        </select>
+                    </div>
+
+                    <!-- ACTION BUTTONS -->
+                    <div class="btn-group">
+                        <button id="chooseNone" class="secondary-btn">Random Topic 🎯</button>
+                        <button id="generateQuiz" class="primary-btn">Generate Quiz 🚀</button>
+                    </div>
+
+                </div>
+
+                <!-- RENDERED QUIZ QUESTIONS -->
+                <div id="quizContainer"></div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- QUIZ SCRIPT -->
+    <script src="quiz.js"></script>
+
+    <!-- SUPABASE -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
+        /* ---------------------------
+           SUPABASE INITIALIZATION
+        ---------------------------- */
+        const SUPABASE_URL = "https://jhtlocpstvvemmjmxdsf.supabase.co";
+        const SUPABASE_ANON_KEY =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpodGxvY3BzdHZ2ZW1tam14ZHNmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUzNzE3MDQsImV4cCI6MjA4MDk0NzcwNH0.yhxGHTb1HHCKeDPo5g9SvH6Zgrhr-fx_McXhV7oDhTs";
+
+        const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        /* ----------------------------------------
+           AUTH GUARD — BLOCK ACCESS IF LOGGED OUT
+        -----------------------------------------*/
+        (async () => {
+            const { data } = await sb.auth.getSession();
+            if (!data.session) {
+                window.location.href = "index.html"; // back to login
+            }
+        })();
+    </script>
+
+</body>
+</html>

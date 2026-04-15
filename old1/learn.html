@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>NEETly Learn — Subjects</title>
+
+  <!-- Minimal CSS to match NEETly theme -->
+    <link rel="stylesheet" href="neetly.css">
+
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+<div class="sidebar">
+
+    <div class="logo">
+        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135755.png"> NEETly System
+    </div>
+
+    <div class="menu-item"><a href="dashboard.html">Dashboard</a></div>
+    <div class="menu-item active"><a href="learn.html">Learn</a></div>
+    <div class="menu-item"><a href="studyhub.html">Study Hub</a></div>
+    <div class="menu-item"><a href="chat.html">Chat Assistant</a></div>
+    <div class="menu-item"><a href="planner.html">Revision Planner</a></div>
+
+</div>
+
+  <!-- MAIN -->
+  <div class="main">
+    <h1>📚 Learn — Subjects</h1>
+    <div class="lead">Choose a subject and pick topics. Complete short MCQs to mark lessons complete. Notes auto-save is enabled.</div>
+
+    <!-- SUBJECT CARDS -->
+    <div id="subjectList" class="subjects"></div>
+
+    <!-- TOPIC AREA -->
+    <div id="topicArea" style="margin-top:22px">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+        <div id="backToSubjects" style="display:none;cursor:pointer;color:var(--accent)">&larr; Back to Subjects</div>
+        <h2 id="subjectHeading" style="margin:0"></h2>
+      </div>
+
+      <div id="topicsGrid" class="topics-grid"></div>
+
+      <!-- Topic Detail (video, points, MCQs, notes) -->
+      <div id="topicDetail" class="topic-detail">
+
+        <div class="section">
+          <h3 id="topicTitle">Topic Title</h3>
+          <div id="topicSub" class="small-muted" style="margin-bottom:12px"></div>
+          <div class="video-wrap" id="topicVideoWrap"></div>
+        </div>
+
+        <div class="section">
+          <h3>Key Points</h3>
+          <ul id="topicPoints" class="small-muted"></ul>
+        </div>
+
+        <div class="section">
+          <h3>Practice — MCQs</h3>
+          <div id="mcqContainer"></div>
+          <div class="mcq-actions">
+            <button id="checkBtn" class="btn">Check Answers</button>
+            <button id="retryBtn" class="btn ghost">Retry</button>
+            <div id="mcqMsg" class="small-muted"></div>
+          </div>
+        </div>
+
+        <div class="section notes">
+          <h3>✍ Your Notes (auto-save)</h3>
+          <textarea id="noteField" placeholder="Write notes here..."></textarea>
+          <div style="margin-top:8px"><button id="saveNoteBtn" class="btn">Save Now</button></div>
+          <div id="noteSavedMsg" class="small-muted" style="margin-top:8px;display:none">Notes saved</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- PART 2: Paste the 'subjects' data script here -->
+<script id="subjects-data">
+/* -------------------------
+   PART 2 — Subjects & Topics data (LOCAL MP4 video tags)
+------------------------- */
+
+const subjects = [
+
+/* -------------------------------------------------------------------
+   PHYSICS — 8 Topics
+------------------------------------------------------------------- */
+{
+  id: 'physics',
+  title: 'Physics',
+  desc: 'Mechanics, Thermo, Waves, Electricity',
+  topics: [
+
+    /* 1 — Motion in One Dimension */
+    {
+      id: 'phy_motion_1d',
+      title: 'Motion in One Dimension',
+      thumbnail: 'assets/thumbs/motion.jpg',
+      video: `
+        <video controls style="width:100%;height:300px;border-radius:10px;">
+            <source src="assets/videos/physics_motion.mp4" type="video/mp4">
+        </video>
+      `,
+      points: [
+        'Distance vs displacement',
+        'Speed & velocity',
+        'Equations for constant acceleration'
+      ],
+      mcqs: [
+        { q:'SI unit of acceleration?', options:['m/s','m/s²','km/h','m²/s'], a:1, explain:'Acceleration unit is m/s².' },
+        { q:'s = ut + 1/2 at² when u = 0 becomes?', options:['ut','0.5at²','at²','u²/2a'], a:1, explain:'With u=0, s = ½at².' },
+        { q:'Velocity measures?', options:['Speed','Displacement/time','Distance/time','Momentum'], a:1, explain:'Velocity = displacement per unit time.' },
+        { q:'Graph of uniform velocity vs time is', options:['Horizontal line','Sloped line','Parabola','Vertical line'], a:0, explain:'Velocity constant over time.' },
+        { q:'If acceleration = 0 → motion is', options:['Accelerated','Uniform velocity','Oscillatory','Random'], a:1, explain:'Zero acceleration = constant velocity.' },
+        { q:'Dimension of displacement?', options:['[L]','[T]','[LT]','[L/T]'], a:0, explain:'Displacement has length dimension.' },
+        { q:'Average speed formula?', options:['Total distance/total time','Displacement/time','Distance²/time','Velocity×2'], a:0, explain:'Definition.' }
+      ]
+    },
+
+    /* 2 — Newton’s Laws & Dynamics */
+    {
+      id: 'phy_dynamics',
+      title: "Newton's Laws & Dynamics",
+      thumbnail: 'assets/thumbs/dynamics.jpg',
+      video: `
+        <video controls style="width:100%;height:300px;border-radius:10px;">
+          <source src="assets/videos/physics_newton.mp4" type="video/mp4">
+        </video>
+      `,
+      points: [
+        'Newton’s laws',
+        'Free-body diagrams',
+        'F = ma'
+      ],
+      mcqs: [
+        { q:"Newton's second law?", options:['F=mv','F=ma','F=m/a','F=a/m'], a:1, explain:'F = ma.' },
+        { q:'Action and reaction are?', options:['Same direction','Opposite direction','Different magnitudes','No relation'], a:1, explain:'Equal and opposite.' },
+        { q:'Unit of force?', options:['N','J','W','Pa'], a:0, explain:'Newton (N).' },
+        { q:'Friction acts', options:['Along motion','Opposite motion','Perpendicular','Random'], a:1, explain:'Opposes motion.' },
+        { q:'Inertia depends on', options:['Velocity','Mass','Shape','Force'], a:1, explain:'Mass measures inertia.' },
+        { q:'If net force = 0 → motion?', options:['Accelerating','Constant velocity','Stops immediately','Random'], a:1, explain:'No acceleration.' },
+        { q:'Coefficient of friction is', options:['Dimensionless','Newton','Joule','Pascal'], a:0, explain:'No units.' }
+      ]
+    },
+
+    /* 3 — Work, Energy & Power */
+    {
+      id: 'phy_work_energy',
+      title: 'Work, Energy & Power',
+      thumbnail: 'assets/thumbs/work.jpg',
+      video: `
+        <video controls style="width:100%;height:300px;border-radius:10px;">
+          <source src="assets/videos/physics_work.mp4" type="video/mp4">
+        </video>
+      `,
+      points: [
+        'Work = F·s',
+        'Kinetic & potential energy',
+        'Power = work/time'
+      ],
+      mcqs: [
+        { q:'Unit of work?', options:['Joule','Watt','Newton','Pascal'], a:0, explain:'Work measured in joules.' },
+        { q:'Kinetic energy formula?', options:['1/2 mv²','mgh','Fv','mv'], a:0, explain:'KE = ½mv².' },
+        { q:'Power unit?', options:['Watt','Joule','Newton','Meter'], a:0, explain:'J/s = Watt.' },
+        { q:'Potential energy depends on', options:['Mass & height','Velocity','Color','Temperature'], a:0, explain:'PE = mgh.' },
+        { q:'Conservative forces depend on', options:['Path','Endpoints','Time','Speed'], a:1, explain:'Work independent of path.' },
+        { q:'Work vs friction is', options:['Negative','Positive','Zero','Infinite'], a:0, explain:'Friction opposes motion.' },
+        { q:'If force ⟂ displacement → work =', options:['0','Max','Negative','Undefined'], a:0, explain:'Dot product zero.' }
+      ]
+    },
+
+    /* 4 — Waves & Oscillations */
+    {
+      id: 'phy_waves',
+      title: 'Waves & Oscillations',
+      thumbnail: 'assets/thumbs/waves.jpg',
+      video: `
+        <video controls style="width:100%;height:300px;border-radius:10px;">
+          <source src="assets/videos/physics_waves.mp4" type="video/mp4">
+        </video>
+      `,
+      points: [
+        'Simple harmonic motion',
+        'Wave speed relation v = λf',
+        'Frequency & period'
+      ],
+      mcqs: [
+        { q:'SHM restoring force ∝', options:['x²','x','v','t'], a:1, explain:'Hooke’s law.' },
+        { q:'Relation between f and T?', options:['f=T','f=1/T','f=T²','f=√T'], a:1, explain:'Inverse relation.' },
+        { q:'Wave speed v =', options:['λ/T','λf','Both','None'], a:2, explain:'λ/T = λf.' },
+        { q:'Transverse wave displacement is', options:['Parallel','Perpendicular','Random','Zero'], a:1, explain:'To wave direction.' },
+        { q:'Unit of frequency?', options:['Hz','m','s','N'], a:0, explain:'Hertz.' },
+        { q:'Resonance amplitude is', options:['Max','Min','Zero','Undefined'], a:0, explain:'Maximum amplitude.' },
+        { q:'Phase diff between sin & cos', options:['π/2','π','0','2π'], a:0, explain:'90° phase shift.' }
+      ]
+    },
+
+    /* 5 — Gravitation */
+    {
+      id: 'phy_gravitation',
+      title: 'Gravitation',
+      thumbnail: 'assets/thumbs/gravitation.jpg',
+      video: `
+        <video controls style="width:100%;height:300px;border-radius:10px;">
+          <source src="assets/videos/physics_grav.mp4" type="video/mp4">
+        </video>
+      `,
+      points: [
+        "Newton's law of gravitation",
+        'Orbital motion',
+        'Escape velocity'
+      ],
+      mcqs: [
+        { q:'Gravitational force ∝', options:['1/r²','r²','1/r','r'], a:0, explain:'Inverse square law.' },
+        { q:'Escape velocity =', options:['√(2GM/R)','√(GM/R)','GM/R','2GM/R'], a:0, explain:'Standard escape velocity.' },
+        { q:'Circular orbit speed =', options:['√(GM/r)','GM/r','√(2GM/r)','GM²/r'], a:0, explain:'Centripetal = gravitational.' },
+        { q:'GPE formula?', options:['-GMm/r','+GMm/r','GMm r','GM/r'], a:0, explain:'Negative potential energy.' },
+        { q:'Tidal forces due to', options:['Gravity gradient','Magnetism','Friction','Pressure'], a:0, explain:'Different pull strengths.' },
+        { q:'Orbital period independent of', options:['Satellite mass','Earth','Sun','Moon'], a:0, explain:'Depends on central body.' },
+        { q:'Weightlessness in orbit due to', options:['Free fall','No gravity','Zero mass','Friction'], a:0, explain:'In continuous free fall.' }
+      ]
+    },
+
+    /* 6 — Rotational Motion */
+    {
+      id: 'phy_rotational',
+      title: 'Rotational Motion',
+      thumbnail: 'assets/thumbs/rotational.jpg',
+      video: `
+        <video controls style="width:100%;height:300px;border-radius:10px;">
+          <source src="assets/videos/physics_rotation.mp4" type="video/mp4">
+        </video>
+      `,
+      points: [
+        'Moment of inertia',
+        'Torque τ = r × F',
+        'Angular momentum'
+      ],
+      mcqs: [
+        { q:'Torque =', options:['r×F','r·F','r+F','r-F'], a:0, explain:'Cross product.' },
+        { q:'MoI depends on', options:['Mass distribution','Color','Velocity','Time'], a:0, explain:'Depends on axis and distribution.' },
+        { q:'Angular momentum L =', options:['Iω','mvr','mv²','I/a'], a:0, explain:'Rotational analogue of momentum.' },
+        { q:'Parallel axis theorem relates', options:['I_about_axis','Mass','Energy','Torque'], a:0, explain:'Adds md² term.' },
+        { q:'If net torque = 0 →', options:['L conserved','Energy zero','Mass zero','No meaning'], a:0, explain:'Angular momentum conserved.' },
+        { q:'Rotational KE =', options:['1/2 Iω²','1/2 mv²','Iω','I/a'], a:0, explain:'KE of rotation.' },
+        { q:'Rolling without slipping: v =', options:['ωr','r/ω','ω/r','vω'], a:0, explain:'Linear speed = angular * radius.' }
+      ]
+    },
+
+    /* 7 — Heat & Thermodynamics */
+    {
+      id: 'phy_thermo',
+      title: 'Heat & Thermodynamics',
+      thumbnail: 'assets/thumbs/thermo.jpg',
+      video: `
+        <video controls style="width:100%;height:300px;border-radius:10px;">
+          <source src="assets/videos/physics_thermo.mp4" type="video/mp4">
+        </video>
+      `,
+      points: [
+        'Laws of thermodynamics',
+        'Heat capacity',
+        'Entropy'
+      ],
+      mcqs: [
+        { q:'First law: ΔU =', options:['Q - W','Q + W','W - Q','0'], a:0, explain:'Energy conservation.' },
+        { q:'Entropy measures', options:['Disorder','Energy','Mass','Force'], a:0, explain:'Higher entropy = more disorder.' },
+        { q:'Specific heat units', options:['J/kgK','J/mol','W','Pa'], a:0, explain:'Energy per mass per degree.' },
+        { q:'For reversible process ΔS =', options:['∫δQ_rev/T','Q/T','0','T/Q'], a:0, explain:'Definition.' },
+        { q:'Carnot efficiency depends on', options:['Temperatures','Pressure','Volume','Mass'], a:0, explain:'1 - Tc/Th.' },
+        { q:'ΔG < 0 means', options:['Spontaneous','Non-spontaneous','Equilibrium','Impossible'], a:0, explain:'Negative ΔG = spontaneous.' },
+        { q:'Heat flows from', options:['Hot → cold','Cold → hot','Depends','None'], a:0, explain:'Second law.' }
+      ]
+    },
+
+    /* 8 — Electric Charges & Fields */
+    {
+      id: 'phy_electro',
+      title: 'Electric Charges & Fields',
+      thumbnail: 'assets/thumbs/electric.jpg',
+      video: `
+        <video controls style="width:100%;height:300px;border-radius:10px;">
+          <source src="assets/videos/physics_electric.mp4" type="video/mp4">
+        </video>
+      `,
+      points: [
+        'Coulomb’s law',
+        'Electric field',
+        'Potential'
+      ],
+      mcqs: [
+        { q:'Coulomb force ∝', options:['1/r²','r²','r','log r'], a:0, explain:'Inverse square law.' },
+        { q:'Electric field E =', options:['F/q','q/F','V/q','F×q'], a:0, explain:'Force per unit charge.' },
+        { q:'Potential due to point charge ∝', options:['1/r','1/r²','r','r²'], a:0, explain:'Scalar potential.' },
+        { q:'Gauss law relates flux to', options:['Charge enclosed','Potential','Force','None'], a:0, explain:'Φ = Q_enc / ε₀.' },
+        { q:'Equipotential surfaces → E is', options:['Perpendicular','Parallel','Zero','Along surface'], a:0, explain:'Field ⟂ surface.' },
+        { q:'Capacitance unit', options:['Farad','Coulomb','Volt','Watt'], a:0, explain:'Unit of capacitance.' },
+        { q:'Dielectric increases', options:['Capacitance','Resistance','Voltage','Current'], a:0, explain:'More charge stored.' }
+      ]
+    }
+
+  ] // END topics
+},
+
+/* -------------------------------------------------------------------
+   CHEMISTRY — 8 Topics
+------------------------------------------------------------------- */
+
+{
+  id: 'chemistry',
+  title: 'Chemistry',
+  desc: 'Physical, Organic, Inorganic fundamentals',
+  topics: [
+
+    /* 1 — Thermodynamics */
+    {
+      id:'chem_thermo',
+      title:'Thermodynamics',
+      thumbnail: 'assets/thumbs/chem_thermo.jpg',
+      video: `
+        <video controls style="width:100%;height:300px;border-radius:10px;">
+            <source src="assets/videos/chem_thermo.mp4" type="video/mp4">
+        </video>
+      `,
+      points:['First law','Enthalpy','Entropy'],
+      mcqs:[
+        { q:'First law expresses conservation of?', options:['Energy','Mass','Charge','Entropy'], a:0, explain:'ΔU = Q - W.' },
+        { q:'Unit of enthalpy?', options:['J','Pa','mol','K'], a:0, explain:'Enthalpy measured in joules.' },
+        { q:'Entropy symbol?', options:['S','H','G','E'], a:0, explain:'Entropy is S.' },
+        { q:'Exothermic → ΔH is', options:['Negative','Positive','Zero','Undefined'], a:0, explain:'Releases heat.' },
+        { q:'Reaction spontaneous if ΔG is', options:['<0','>0','=0','None'], a:0, explain:'Negative ΔG → spontaneous.' },
+        { q:'Heat capacity unit', options:['J/kgK','mol','Pa','L'], a:0, explain:'Energy per mass per Kelvin.' },
+        { q:'State function example', options:['Enthalpy','Work','Heat','Path'], a:0, explain:'State functions don’t depend on path.' }
+      ]
+    },
+
+    /* 2 — Atomic Structure */
+    {
+      id:'chem_atomic',
+      title:'Atomic Structure',
+      thumbnail: 'assets/thumbs/atomic.jpg',
+      video: `
+        <video controls style="width:100%;height:300px;border-radius:10px;">
+            <source src="assets/videos/chem_atomic.mp4" type="video/mp4">
+        </video>
+      `,
+      points:['Bohr model','Electron config','Quantum numbers'],
+      mcqs:[
+        { q:'Electron config of O?', options:['1s2 2s2 2p4','1s2 2s2 2p6','1s2 2s1','1s1 2s2'], a:0, explain:'Oxygen: 8 electrons.' },
+        { q:'Ionization energy across period', options:['Increases','Decreases','Constant','Random'], a:0, explain:'Nuclear charge increases.' },
+        { q:'Valence electrons decide', options:['Chemical properties','Color','Density','Mass'], a:0, explain:'Reactivity depends on valence electrons.' },
+        { q:'Pauli principle says', options:['No same 4 quantum numbers','Mass same','Spin zero','All equal'], a:0, explain:'Pauli exclusion.' },
+        { q:'Hund’s rule: maximize', options:['Spin','Energy','Distance','Charge'], a:0, explain:'Fill singly first.' },
+        { q:'Isotopes differ in', options:['Neutrons','Protons','Electrons','Charge'], a:0, explain:'Different neutron count.' },
+        { q:'Principal quantum number n indicates', options:['Shell','Spin','Charge','Mass'], a:0, explain:'Energy level.' }
+      ]
+    },
+
+    /* 3 — Organic Basics */
+    {
+      id:'chem_organic',
+      title:'Organic Chemistry Basics',
+      thumbnail: 'assets/thumbs/organic.jpg',
+      video: `
+        <video controls style="width:100%;height:300px;border-radius:10px;">
+            <source src="assets/videos/chem_organic.mp4" type="video/mp4">
+        </video>
+      `,
+      points:['Functional groups','Hybridisation','Isomerism'],
+      mcqs:[
+        { q:'Alcohol group is', options:['-OH','-COOH','-NH2','-SH'], a:0, explain:'Hydroxyl group.' },
+        { q:'sp2 carbon shape', options:['Planar','Tetrahedral','Linear','None'], a:0, explain:'Trigonal planar.' },
+        { q:'Isomerism means', options:['Same formula diff structure','Diff formula same structure','Same structure new name','None'], a:0, explain:'Isomers have same formula.' },
+        { q:'Aromatic example', options:['Benzene','Ethane','Butane','Methane'], a:0, explain:'Aromatic ring.' },
+        { q:'Electrophile accepts', options:['Electron pair','Proton','Neutron','Photon'], a:0, explain:'Electron loving.' },
+        { q:'Nucleophile donates', options:['Electron pair','Proton','Neutron','Photon'], a:0, explain:'Nucleophile donates electrons.' },
+        { q:'Resonance stabilizes by', options:['Delocalizing electrons','Heating','Pressure','Catalysis'], a:0, explain:'Spread electron density.' }
+      ]
+    },
+
+    /* 4 — Chemical Kinetics */
+    {
+      id:'chem_kinetics',
+      title:'Chemical Kinetics',
+      thumbnail: 'assets/thumbs/kinetics.jpg',
+      video: `
+        <video controls style="width:100%;height:300px;border-radius:10px;">
+            <source src="assets/videos/chem_kinetics.mp4" type="video/mp4">
+        </video>
+      `,
+      points:['Rate laws','Order of reaction','Activation energy'],
+      mcqs:[
+        { q:'Rate law determined by', options:['Experiment','Stoichiometry','Concentration','Temperature'], a:0, explain:'Experimentally measured.' },
+        { q:'Order = sum of', options:['Exponents in rate law','Moles','Mass','Temperature'], a:0, explain:'Order of reaction.' },
+        { q:'Catalyst effect', options:['Lowers activation energy','Increases Ea','Removes reactant','Adds product'], a:0, explain:'Speeds up reaction.' },
+        { q:'Half-life constant in', options:['First order','Zero order','Second order','Not defined'], a:0, explain:'Independent of concentration.' },
+        { q:'Rate constant units depend on', options:['Order','Color','pH','Voltage'], a:0, explain:'k units vary with reaction order.' },
+        { q:'Temperature increases rate because', options:['More collisions','Less collisions','Same','None'], a:0, explain:'More kinetic energy.' },
+        { q:'Activation energy symbol', options:['Ea','Ep','Ek','Et'], a:0, explain:'Ea is activation energy.' }
+      ]
+    },
+
+    /* 5 — Chemical Bonding */
+    {
+      id:'chem_bonding',
+      title:'Chemical Bonding',
+      thumbnail: 'assets/thumbs/bonding.jpg',
+      video: `
+        <video controls style="width:100%;height:300px;border-radius:10px;">
+            <source src="assets/videos/chem_bonding.mp4" type="video/mp4">
+        </video>
+      `,
+      points:['Ionic & covalent','Hybridization','Molecular geometry'],
+      mcqs:[
+        { q:'Ionic bond formed by', options:['Transfer of electrons','Sharing','Heat','Light'], a:0, explain:'Ionic = electron transfer.' },
+        { q:'Covalent bond is', options:['Sharing of electrons','Transfer','No electrons','Photon transfer'], a:0, explain:'Covalent = sharing.' },
+        { q:'sp3 geometry is', options:['Tetrahedral','Trigonal planar','Linear','Square'], a:0, explain:'sp3 = tetrahedral.' },
+        { q:'Polar bond occurs if', options:['Electronegativity difference','Same EN','Same atom','No bond'], a:0, explain:'Unequal sharing.' },
+        { q:'Resonance occurs due to', options:['Delocalized π electrons','Single bonds','Metals','None'], a:0, explain:'Electron delocalization.' },
+        { q:'VSEPR predicts', options:['Molecular shape','Mass','Color','Phase'], a:0, explain:'Based on electron repulsion.' },
+        { q:'Dipole moment measures', options:['Polarity','Mass','Charge','Radius'], a:0, explain:'Indicates charge separation.' }
+      ]
+    },
+
+    /* 6 — Chemical Equilibrium */
+    {
+      id:'chem_equilibrium',
+      title:'Chemical Equilibrium',
+      thumbnail: 'assets/thumbs/equilibrium.jpg',
+      video: `
+        <video controls style="width:100%;height:300px;border-radius:10px;">
+            <source src="assets/videos/chem_equilibrium.mp4" type="video/mp4">
+        </video>
+      `,
+      points:['Le Chatelier','Kc & Kp','Equilibrium shifts'],
+      mcqs:[
+        { q:'Le Chatelier principle says', options:['System opposes change','Accepts change','Independent','Random'], a:0, explain:'Equilibrium shifts to reduce change.' },
+        { q:'Kc expression includes', options:['Products/Reactants powers','Only reactants','Only products','None'], a:0, explain:'Based on equilibrium concentration.' },
+        { q:'Addition of inert gas at constant V', options:['No effect','Right','Left','Removes products'], a:0, explain:'Partial pressures unchanged.' },
+        { q:'If K >> 1 reaction favours', options:['Products','Reactants','Equilibrium','None'], a:0, explain:'Large K → product favoured.' },
+        { q:'Raising temperature for exothermic reaction', options:['Decreases K','Increases K','No change','Infinite'], a:0, explain:'Heat is product → shift left.' },
+        { q:'Kp related to Kc by', options:['(RT)^Δn','R+T','R-T','None'], a:0, explain:'Kp = Kc(RT)^Δn.' },
+        { q:'Dynamic equilibrium means', options:['Equal forward/backward rates','No reaction','Stopped','Complete'], a:0, explain:'Rates equal, concentrations constant.' }
+      ]
+    },
+
+    /* 7 — Solutions & Colligative Properties */
+    {
+      id:'chem_solutions',
+      title:'Solutions & Colligative Properties',
+      thumbnail: 'assets/thumbs/solutions.jpg',
+      video: `
+        <video controls style="width:100%;height:300px;border-radius:10px;">
+            <source src="assets/videos/chem_solutions.mp4" type="video/mp4">
+        </video>
+      `,
+      points:['Raoult’s law','Boiling point elevation','Osmotic pressure'],
+      mcqs:[
+        { q:'Raoult’s law valid for', options:['Ideal solutions','Non-ideal','Ionic only','None'], a:0, explain:'Ideal behaviour.' },
+        { q:'Boiling point elevation ∝', options:['Molality','Molarity','Mass','Volume'], a:0, explain:'ΔTb = Kb × m.' },
+        { q:'Osmotic pressure Π =', options:['iMRT','MRT','iRT','None'], a:0, explain:'Van ’t Hoff equation.' },
+        { q:'Vapor pressure lowers when', options:['Solute added','Solvent added','Heated','None'], a:0, explain:'Solute reduces vapor pressure.' },
+        { q:'Colligative properties depend on', options:['Number of particles','Type of particles','Color','pH'], a:0, explain:'Not on identity.' },
+        { q:'Molality unit', options:['mol/kg','mol/L','mol','kg/mol'], a:0, explain:'Mol solute per kg solvent.' },
+        { q:'Nonvolatile solute effect on BP', options:['Raises BP','Lowers BP','No change','Lowers MP'], a:0, explain:'Elevation of boiling point.' }
+      ]
+    },
+
+    /* 8 — Redox Reactions */
+    {
+      id:'chem_redox',
+      title:'Redox Reactions',
+      thumbnail: 'assets/thumbs/redox.jpg',
+      video: `
+        <video controls style="width:100%;height:300px;border-radius:10px;">
+            <source src="assets/videos/chem_redox.mp4" type="video/mp4">
+        </video>
+      `,
+      points:['Oxidation numbers','Balancing redox','Electrochemical cells'],
+      mcqs:[
+        { q:'Oxidation means', options:['Loss of electrons','Gain electrons','No change','Loss of protons'], a:0, explain:'LEO — Lose Electrons Oxidation.' },
+        { q:'Reduction means', options:['Gain electrons','Lose electrons','Gain protons','Lose protons'], a:0, explain:'GER — Gain Electrons Reduction.' },
+        { q:'Anode in galvanic cell is', options:['Negative','Positive','Neutral','None'], a:0, explain:'Anode is negative in galvanic cell.' },
+        { q:'Higher electrode potential → tendency to', options:['Be reduced','Be oxidized','No change','React'], a:0, explain:'Greater reduction tendency.' },
+        { q:'Balancing in acidic medium uses', options:['H2O & H+','OH-','O2','Acid only'], a:0, explain:'To balance O & H atoms.' },
+        { q:'Electron flow in galvanic cell from', options:['Anode → Cathode','Cathode → Anode','Random','None'], a:0, explain:'Electrons move from anode to cathode.' },
+        { q:'Faraday constant measures', options:['Charge per mole e-','Mass','Energy','Heat'], a:0, explain:'96485 C/mol.' }
+      ]
+    }
+
+  ] // END topics
+},
+
+/* -------------------------------------------------------------------
+   BIOLOGY — 8 Topics
+------------------------------------------------------------------- */
+
+{
+  id:'biology',
+  title:'Biology',
+  desc:'Cell bio, Genetics, Ecology, Physiology',
+  topics: [
+
+    /* 1 — Cell Structure & Function */
+    {
+      id:'bio_cell',
+      title:'Cell Structure & Function',
+      thumbnail:'assets/thumbs/cell.jpg',
+      video: `
+        <video controls style="width:100%;height:300px;border-radius:10px;">
+            <source src="assets/videos/bio_cell.mp4" type="video/mp4">
+        </video>
+      `,
+      points:['Organelles','Membrane transport','Prokaryote vs Eukaryote'],
+      mcqs:[
+        { q:'Powerhouse of cell?', options:['Nucleus','Mitochondria','Ribosome','Golgi'], a:1, explain:'Mitochondria produce ATP.' },
+        { q:'Site of protein synthesis?', options:['Ribosome','Nucleus','ER','Golgi'], a:0, explain:'Ribosomes form proteins.' },
+        { q:'Cell membrane mainly composed of', options:['Lipid bilayer','Protein','Carb','DNA'], a:0, explain:'Phospholipid bilayer.' },
+        { q:'Prokaryotes lack', options:['Nucleus','Ribosomes','DNA','Cell membrane'], a:0, explain:'No nucleus in prokaryotes.' },
+        { q:'Osmosis is movement of', options:['Solvent','Solute','Particles','Ions'], a:0, explain:'Water movement.' },
+        { q:'Lysosome function', options:['Digestion','Protein synthesis','DNA replication','Photosynthesis'], a:0, explain:'Digests waste.' },
+        { q:'Mitosis produces', options:['2 identical cells','4 cells','Gametes','No cells'], a:0, explain:'Two daughter cells.' }
+      ]
+    },
+
+    /* 2 — Genetics */
+    {
+      id:'bio_genetics',
+      title:'Mendelian Genetics',
+      thumbnail:'assets/thumbs/genetics.jpg',
+      video: `
+        <video controls style="width:100%;height:300px;border-radius:10px;">
+            <source src="assets/videos/bio_genetics.mp4" type="video/mp4">
+        </video>
+      `,
+      points:['Laws of inheritance','Punnett squares','Dominant/recessive'],
+      mcqs:[
+        { q:'Monohybrid heterozygote ratio?', options:['3:1','1:1','9:3:3:1','2:1'], a:0, explain:'Classic monohybrid ratio.' },
+        { q:'Homozygous means', options:['Two identical alleles','Two different alleles','One allele','None'], a:0, explain:'Same allele pair.' },
+        { q:'Phenotype =', options:['Observable trait','Genetic code','Protein','Gamete'], a:0, explain:'Expressed trait.' },
+        { q:'Carrier of recessive disease?', options:['Heterozygote','Homozygous recessive','Homozygous dominant','None'], a:0, explain:'Carries one mutant allele.' },
+        { q:'Dihybrid ratio?', options:['9:3:3:1','3:1','1:1','2:1'], a:0, explain:'Classic dihybrid cross.' },
+        { q:'Sex-linked traits usually on', options:['X chromosome','Y chromosome','Autosome','Mitochondria'], a:0, explain:'Most on X.' },
+        { q:'Genotype describes', options:['Alleles present','Trait observed','Habitat','Age'], a:0, explain:'Genetic makeup.' }
+      ]
+    },
+
+    /* 3 — Ecology */
+    {
+      id:'bio_ecology',
+      title:'Ecology & Environment',
+      thumbnail:'assets/thumbs/ecology.jpg',
+      video: `
+        <video controls style="width:100%;height:300px;border-radius:10px;">
+            <source src="assets/videos/bio_ecology.mp4" type="video/mp4">
+        </video>
+      `,
+      points:['Food chains','Biomes','Conservation'],
+      mcqs:[
+        { q:'Producer in ecosystem?', options:['Plant','Herbivore','Carnivore','Decomposer'], a:0, explain:'Plants produce energy.' },
+        { q:'Decomposer example', options:['Fungi','Cow','Lion','Bee'], a:0, explain:'Decompose organic matter.' },
+        { q:'Biomagnification due to', options:['Toxins','Water','Soil','Heat'], a:0, explain:'Toxins concentrate up food chain.' },
+        { q:'Niche =', options:['Organism role','Habitat','Population','Community'], a:0, explain:'Role + interaction.' },
+        { q:'Carrying capacity =', options:['Max sustainable population','Min population','Birth rate','Death rate'], a:0, explain:'Limit of environment.' },
+        { q:'Primary succession begins on', options:['Bare rock','Pasture','Forest','City'], a:0, explain:'No soil initially.' },
+        { q:'Biodiversity hotspot indicates', options:['High diversity & threat','Low diversity','No species','Uniform area'], a:0, explain:'Many species + risk.' }
+      ]
+    },
+
+    /* 4 — Human Physiology */
+    {
+      id:'bio_human',
+      title:'Human Physiology Basics',
+      thumbnail:'assets/thumbs/human.jpg',
+      video: `
+        <video controls style="width:100%;height:300px;border-radius:10px;">
+            <source src="assets/videos/bio_human.mp4" type="video/mp4">
+        </video>
+      `,
+      points:['Circulatory system','Respiratory system','Homeostasis'],
+      mcqs:[
+        { q:'Main oxygen carrier?', options:['Haemoglobin','Plasma','WBC','Platelet'], a:0, explain:'Binds oxygen.' },
+        { q:'Heartbeat initiated by', options:['SA node','AV node','Brain','Liver'], a:0, explain:'Pacemaker.' },
+        { q:'Gas exchange occurs in', options:['Alveoli','Bronchi','Trachea','Larynx'], a:0, explain:'Gas exchange site.' },
+        { q:'Platelets function', options:['Clotting','Oxygen transport','Hormone release','Digestion'], a:0, explain:'Helps coagulation.' },
+        { q:'Kidneys regulate', options:['Fluids','Breathing','Vision','DNA'], a:0, explain:'Fluid balance.' },
+        { q:'Insulin produced by', options:['Pancreas','Liver','Kidney','Heart'], a:0, explain:'β-cells of pancreas.' },
+        { q:'Homeostasis maintains', options:['Internal stability','Environment','Organ growth','Temperature only'], a:0, explain:'Stable conditions.' }
+      ]
+    },
+
+    /* 5 — Plant Physiology */
+    {
+      id:'bio_plant',
+      title:'Plant Physiology',
+      thumbnail:'assets/thumbs/plant.jpg',
+      video: `
+        <video controls style="width:100%;height:300px;border-radius:10px;">
+            <source src="assets/videos/bio_plant.mp4" type="video/mp4">
+        </video>
+      `,
+      points:['Photosynthesis','Transpiration','Growth hormones'],
+      mcqs:[
+        { q:'Photosynthesis main product?', options:['Glucose','Oxygen','Water','ATP'], a:0, explain:'Main carbohydrate.' },
+        { q:'Site of photosynthesis?', options:['Chloroplast','Mitochondria','Nucleus','Ribosome'], a:0, explain:'Contains chlorophyll.' },
+        { q:'Transpiration helps in', options:['Water movement','Energy production','Protein synthesis','Fertilization'], a:0, explain:'Drives xylem transport.' },
+        { q:'Auxins influence', options:['Cell elongation','DNA replication','Respiration','None'], a:0, explain:'Growth hormone.' },
+        { q:'C4 plants adapt to', options:['Hot/low CO2','Low light','Cold climate','Wet soil'], a:0, explain:'Reduce photorespiration.' },
+        { q:'Stomata allow', options:['Gas exchange','Water storage','Seed growth','Cell division'], a:0, explain:'CO₂ & O₂ exchange.' },
+        { q:'Photoperiod controls', options:['Flowering','Leaf size','Seed colour','Stem height'], a:0, explain:'Day length response.' }
+      ]
+    },
+
+    /* 6 — Biomolecules */
+    {
+      id:'bio_biomolecules',
+      title:'Biomolecules',
+      thumbnail:'assets/thumbs/biomolecules.jpg',
+      video: `
+        <video controls style="width:100%;height:300px;border-radius:10px;">
+            <source src="assets/videos/bio_biomolecules.mp4" type="video/mp4">
+        </video>
+      `,
+      points:['Proteins, carbs, lipids, nucleic acids','Enzymes','Structure-function'],
+      mcqs:[
+        { q:'Monomer of proteins?', options:['Amino acids','Monosaccharides','Fatty acids','Nucleotides'], a:0, explain:'Building blocks of proteins.' },
+        { q:'DNA sugar?', options:['Deoxyribose','Ribose','Glucose','Fructose'], a:0, explain:'DNA contains deoxyribose.' },
+        { q:'Enzymes are', options:['Biological catalysts','Structural','Carbohydrates','Lipids'], a:0, explain:'Speed biochemical reactions.' },
+        { q:'Peptide bond links', options:['Amino acids','Nucleotides','Sugars','Fatty acids'], a:0, explain:'Protein linkage.' },
+        { q:'Lipids are insoluble in', options:['Water','Oil','Ether','Chloroform'], a:0, explain:'Hydrophobic.' },
+        { q:'Secondary protein structure forms', options:['α-helix & β-sheet','Tertiary folds','Quaternary','Random coil'], a:0, explain:'Hydrogen-bond patterns.' },
+        { q:'ATP provides', options:['Energy','Color','Charge','Smell'], a:0, explain:'Energy currency.' }
+      ]
+    },
+
+    /* 7 — Evolution */
+    {
+      id:'bio_evolution',
+      title:'Evolution & Natural Selection',
+      thumbnail:'assets/thumbs/evolution.jpg',
+      video: `
+        <video controls style="width:100%;height:300px;border-radius:10px;">
+            <source src="assets/videos/bio_evolution.mp4" type="video/mp4">
+        </video>
+      `,
+      points:['Natural selection','Speciation','Evolutionary evidence'],
+      mcqs:[
+        { q:'Natural selection acts on', options:['Phenotypes','Genotypes','Alleles','Species'], a:0, explain:'Acts on expressed traits.' },
+        { q:'Speciation requires', options:['Reproductive isolation','Same habitat','Mutation only','Random mating'], a:0, explain:'Prevents gene flow.' },
+        { q:'Fossils provide', options:['History of life','Future traits','Energy','Heat'], a:0, explain:'Historical records.' },
+        { q:'Genetic drift stronger in', options:['Small populations','Large populations','Plants','Fish'], a:0, explain:'Random changes amplified.' },
+        { q:'Homologous structures indicate', options:['Common ancestry','Different ancestry','No relation','Randomness'], a:0, explain:'Same origin.' },
+        { q:'Adaptive radiation =', options:['Rapid speciation','Slow evolution','Mass extinction','Stasis'], a:0, explain:'Many species from one ancestor.' },
+        { q:'Mutation provides', options:['Genetic variation','Stability','Uniformity','Nothing'], a:0, explain:'Source of new alleles.' }
+      ]
+    },
+
+    /* 8 — Reproduction */
+    {
+      id:'bio_repro',
+      title:'Reproduction in Organisms',
+      thumbnail:'assets/thumbs/repro.jpg',
+      video: `
+        <video controls style="width:100%;height:300px;border-radius:10px;">
+            <source src="assets/videos/bio_reproduction.mp4" type="video/mp4">
+        </video>
+      `,
+      points:['Asexual vs sexual','Gamete formation','Fertilization'],
+      mcqs:[
+        { q:'Mitosis results in', options:['2 identical cells','4 gametes','1 cell','None'], a:0, explain:'Somatic division.' },
+        { q:'Meiosis produces', options:['Gametes','Somatic cells','Tissues','Organs'], a:0, explain:'Haploid gametes.' },
+        { q:'Fertilization restores', options:['Diploid number','Haploid','Triploid','Zero'], a:0, explain:'Gamete fusion restores 2n.' },
+        { q:'Crossing over in', options:['Prophase I','Metaphase II','Anaphase','Telophase'], a:0, explain:'Genetic recombination.' },
+        { q:'Hermaphrodites have', options:['Both reproductive organs','Only male','Only female','None'], a:0, explain:'Male + female organs.' },
+        { q:'Viviparous animals produce', options:['Live young','Eggs','Spores','Seeds'], a:0, explain:'Internal development.' },
+        { q:'External fertilization common in', options:['Aquatic animals','Birds','Mammals','Reptiles'], a:0, explain:'Fish and amphibians.' }
+      ]
+    }
+
+  ] // END topics
+},
+
+]; // END subjects[]
+</script>
+
+</script>
+
+
+  </script>
+
+  <!-- PART 3: Paste the unlock + storage + MCQ logic here -->
+  <script>
+/* ============================================================
+   PART 3 — CORE LOGIC (Unlock, MCQs, Notes, Lesson Save)
+============================================================ */
+
+const UNLOCK_KEY = "neetly_unlocked";
+const LESSON_KEY = "neetly_lessons";
+const NOTES_KEY = "neetly_notes";
+const PASS_PERCENT = 60;
+
+
+/* -----------------------------------
+   REQUIRED FIX ✔ — FIND TOPIC BY ID
+----------------------------------- */
+
+function findTopicById(id) {
+  for (let s of subjects) {
+    for (let t of s.topics) {
+      if (t.id === id) return t;
+    }
+  }
+  return null;
+}
+
+
+/* -----------------------------------
+   UNLOCK SYSTEM
+----------------------------------- */
+
+function initializeUnlocks() {
+  let stored = localStorage.getItem(UNLOCK_KEY);
+
+  // if nothing exists → unlock first topic of each subject
+  if (!stored) {
+    let u = {};
+    subjects.forEach(sub => {
+      if (sub.topics.length > 0) {
+        u[sub.topics[0].id] = true;
+      }
+    });
+    localStorage.setItem(UNLOCK_KEY, JSON.stringify(u));
+    return u;
+  }
+
+  // auto-fix corrupted localStorage
+  try {
+    return JSON.parse(stored);
+  } catch {
+    localStorage.removeItem(UNLOCK_KEY);
+    return initializeUnlocks();
+  }
+}
+
+function readUnlocked() {
+  return initializeUnlocks();
+}
+
+function unlockNext(topicId) {
+  const unlocked = readUnlocked();
+  const lessons = JSON.parse(localStorage.getItem(LESSON_KEY) || "{}");
+
+  // find subject + position
+  let parentSubject = null;
+  let index = -1;
+
+  for (let s of subjects) {
+    index = s.topics.findIndex(t => t.id === topicId);
+    if (index !== -1) {
+      parentSubject = s;
+      break;
+    }
+  }
+
+  if (!parentSubject) return;
+
+  // unlock next topic locally
+  if (index + 1 < parentSubject.topics.length) {
+    const nextTopicId = parentSubject.topics[index + 1].id;
+    unlocked[nextTopicId] = true;
+    localStorage.setItem(UNLOCK_KEY, JSON.stringify(unlocked));
+
+    // 🔥 also unlock in DB
+    syncUnlockToDBForNext(nextTopicId);
+  }
+}
+
+// 🔥 New helper: unlock current topic in DB
+async function syncUnlockToDB(userId, topicId) {
+  try {
+    await sb.from("user_unlocks").upsert({
+      user_id: userId,
+      topic_id: topicId,
+      unlocked: true
+    }, { onConflict: "user_id,topic_id" });
+  } catch (err) {
+    console.error("Error unlocking topic in DB:", err);
+  }
+}
+
+// 🔥 New helper: unlock NEXT topic in DB (wraps getCurrentUser)
+async function syncUnlockToDBForNext(nextTopicId) {
+  try {
+    const user = await getCurrentUser();
+    if (!user) return;
+    await sb.from("user_unlocks").upsert({
+      user_id: user.id,
+      topic_id: nextTopicId,
+      unlocked: true
+    }, { onConflict: "user_id,topic_id" });
+  } catch (err) {
+    console.error("Error unlocking next topic in DB:", err);
+  }
+}
+
+
+/* -----------------------------------
+   SAVE LESSON PROGRESS
+----------------------------------- */
+
+function saveLessonProgress(topicId, percent) {
+  // 1️⃣ Keep old localStorage behaviour
+  const lessons = JSON.parse(localStorage.getItem(LESSON_KEY) || "{}");
+  const t = findTopicById(topicId);
+
+  const completed = percent >= PASS_PERCENT;
+
+  lessons[topicId] = {
+    completed,
+    score: percent,
+    chapterTitle: t ? t.title : "Lesson"
+  };
+
+  localStorage.setItem(LESSON_KEY, JSON.stringify(lessons));
+
+  // 2️⃣ New: also sync to Supabase
+  syncLessonToDB(topicId, percent, completed);
+}
+
+// 🔥 New helper: write to Supabase user_progress + user_unlocks
+async function syncLessonToDB(topicId, percent, completed) {
+  try {
+    const user = await getCurrentUser();
+    if (!user) return;
+
+    // user_progress upsert
+    await sb.from("user_progress").upsert({
+      user_id: user.id,
+      topic_id: topicId,
+      score: percent,
+      completed: completed
+    }, { onConflict: "user_id,topic_id" });
+
+    // If completed, also unlock next topic in DB
+    if (completed) {
+      await syncUnlockToDB(user.id, topicId);
+    }
+  } catch (err) {
+    console.error("Error syncing lesson to DB:", err);
+  }
+}
+
+
+
+/* -----------------------------------
+   NOTES
+----------------------------------- */
+
+function saveNote(topicId, text) {
+  // 1️⃣ Keep old localStorage
+  const notes = JSON.parse(localStorage.getItem(NOTES_KEY) || "{}");
+  notes[topicId] = text;
+  localStorage.setItem(NOTES_KEY, JSON.stringify(notes));
+
+  // 2️⃣ New: save in DB
+  syncNoteToDB(topicId, text);
+}
+
+function getNote(topicId) {
+  const notes = JSON.parse(localStorage.getItem(NOTES_KEY) || "{}");
+  return notes[topicId] || "";
+}
+
+// 🔥 New helper: save notes to Supabase
+async function syncNoteToDB(topicId, text) {
+  try {
+    const user = await getCurrentUser();
+    if (!user) return;
+
+    await sb.from("user_notes").upsert({
+      user_id: user.id,
+      topic_id: topicId,
+      note_text: text
+    }, { onConflict: "user_id,topic_id" });
+  } catch (err) {
+    console.error("Error syncing note to DB:", err);
+  }
+}
+
+
+
+/* -----------------------------------
+   MCQ CHECKING
+----------------------------------- */
+
+function evaluateMCQ(topic, container) {
+  let correct = 0;
+  const total = topic.mcqs.length;
+
+  [...container.querySelectorAll(".mcq-card")].forEach((card, idx) => {
+
+    const selected = card.querySelector("input[type=radio]:checked");
+    const msg = card.querySelector(".explain");
+
+    if (!selected) {
+      msg.textContent = "No option selected.";
+      msg.style.color = "#a94442";
+      return;
+    }
+
+    // Convert selected to NUMBER
+    const chosen = parseInt(selected.value);
+
+    // Correct answer INDEX
+    const actual = topic.mcqs[idx].a;
+
+    if (chosen === actual) {
+      correct++;
+      msg.textContent = "Correct ✔ — " + topic.mcqs[idx].explain;
+      msg.style.color = "#0c7b26";
+    } else {
+      msg.textContent = "Wrong ✘ — " + topic.mcqs[idx].explain;
+      msg.style.color = "#b12b2b";
+    }
+  });
+
+  const percent = Math.round((correct / total) * 100);
+
+  return { correct, total, percent };
+}
+</script>
+
+
+
+<!-- ============================================================
+     PART 4 — UI INTERACTIONS
+============================================================ -->
+<script>
+let currentSubject = null;
+let currentTopic = null;
+
+const subjectList = document.getElementById("subjectList");
+const topicArea = document.getElementById("topicArea");
+const topicsGrid = document.getElementById("topicsGrid");
+const topicDetail = document.getElementById("topicDetail");
+
+const subjectHeading = document.getElementById("subjectHeading");
+const backToSubjects = document.getElementById("backToSubjects");
+const noteField = document.getElementById("noteField");
+const noteSavedMsg = document.getElementById("noteSavedMsg");
+
+const mcqContainer = document.getElementById("mcqContainer");
+const checkBtn = document.getElementById("checkBtn");
+const retryBtn = document.getElementById("retryBtn");
+const mcqMsg = document.getElementById("mcqMsg");
+
+const topicTitle = document.getElementById("topicTitle");
+const topicSub = document.getElementById("topicSub");
+const topicPoints = document.getElementById("topicPoints");
+const topicVideoWrap = document.getElementById("topicVideoWrap");
+
+
+
+/* -----------------------------------
+   SUBJECT CARDS
+----------------------------------- */
+
+function renderSubjects() {
+  subjectList.innerHTML = "";
+
+  subjects.forEach(sub => {
+    const card = document.createElement("div");
+    card.className = "subject-card";
+
+    card.innerHTML = `
+      <div class="subject-title">${sub.title}</div>
+      <div class="subject-desc">${sub.desc}</div>
+      <div class="subject-meta">${sub.topics.length} topics</div>
+      <button class="start-btn">Open</button>
+    `;
+
+    card.querySelector(".start-btn").onclick = () => openSubject(sub);
+    subjectList.appendChild(card);
+  });
+}
+
+
+
+/* -----------------------------------
+   OPEN SUBJECT → SHOW TOPICS
+----------------------------------- */
+
+function openSubject(sub) {
+  currentSubject = sub;
+
+  subjectHeading.textContent = sub.title;
+  topicDetail.style.display = "none";
+  backToSubjects.style.display = "block";
+
+  renderTopics(sub);
+}
+
+
+
+function renderTopics(sub) {
+  const unlocked = readUnlocked();
+  topicsGrid.innerHTML = "";
+
+  sub.topics.forEach(t => {
+    const card = document.createElement("div");
+    card.className = "topic-card";
+
+    const isUnlocked = unlocked[t.id] ? true : false;
+    const lessons = JSON.parse(localStorage.getItem(LESSON_KEY) || "{}");
+
+    if (!isUnlocked) card.classList.add("locked");
+
+    const completed = lessons[t.id]?.completed ? true : false;
+
+    card.innerHTML = `
+      <div class="topic-title">${t.title}</div>
+      ${!isUnlocked ? `<div class="lock-badge">Locked</div>` : ``}
+      ${completed ? `<span class="status-badge">Done</span>` : ``}
+      <div class="topic-desc small-muted">${t.points[0]}</div>
+    `;
+
+    if (isUnlocked) card.onclick = () => openTopic(t);
+    topicsGrid.appendChild(card);
+  });
+}
+
+
+
+/* -----------------------------------
+   OPEN TOPIC
+----------------------------------- */
+
+function openTopic(t) {
+  currentTopic = t;
+
+  topicDetail.style.display = "block";
+
+  topicTitle.textContent = t.title;
+  topicSub.textContent = "Concepts covered: " + t.points.length;
+  topicPoints.innerHTML = t.points.map(p => `<li>${p}</li>`).join("");
+
+  topicVideoWrap.innerHTML = t.video;
+
+  renderMCQs(t);
+
+  noteField.value = getNote(t.id);
+}
+
+
+
+/* -----------------------------------
+   RENDER MCQs
+----------------------------------- */
+
+function renderMCQs(topic) {
+  mcqContainer.innerHTML = "";
+  mcqMsg.textContent = "";
+
+  topic.mcqs.forEach((m, idx) => {
+    const card = document.createElement("div");
+    card.className = "mcq-card";
+
+    card.innerHTML = `
+      <div class="mcq-q">${idx + 1}. ${m.q}</div>
+
+      <div class="mcq-options">
+        ${m.options
+          .map(
+            (o, i) => `
+            <label>
+              <input type="radio" name="mcq${idx}" value="${i}">
+              ${o}
+            </label>`
+          )
+          .join("")}
+      </div>
+
+      <div class="explain small-muted"></div>
+    `;
+
+    mcqContainer.appendChild(card);
+  });
+}
+
+
+
+/* -----------------------------------
+   CHECK MCQs
+----------------------------------- */
+
+checkBtn.onclick = () => {
+  if (!currentTopic) return;
+
+  const result = evaluateMCQ(currentTopic, mcqContainer);
+  mcqMsg.textContent = `Scored ${result.correct}/${result.total} (${result.percent}%)`;
+
+  saveLessonProgress(currentTopic.id, result.percent);
+
+  if (result.percent >= PASS_PERCENT) {
+    unlockNext(currentTopic.id);
+    renderTopics(currentSubject);
+    mcqMsg.style.color = "#0c7b26";
+    mcqMsg.textContent += " — Topic unlocked!";
+  }
+};
+
+
+
+retryBtn.onclick = () => {
+  if (!currentTopic) return;
+  renderMCQs(currentTopic);
+  mcqMsg.textContent = "";
+};
+
+
+
+/* -----------------------------------
+   SAVE NOTES
+----------------------------------- */
+
+document.getElementById("saveNoteBtn").onclick = () => {
+  if (!currentTopic) return;
+  saveNote(currentTopic.id, noteField.value);
+  noteSavedMsg.style.display = "block";
+  setTimeout(() => noteSavedMsg.style.display = "none", 1500);
+};
+
+
+
+/* -----------------------------------
+   BACK TO SUBJECT LIST
+----------------------------------- */
+
+backToSubjects.onclick = () => {
+  topicDetail.style.display = "none";
+  subjectHeading.textContent = "";
+  backToSubjects.style.display = "none";
+};
+
+
+
+/* -----------------------------------
+   INIT
+----------------------------------- */
+
+initializeUnlocks();
+renderSubjects();
+
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const SUPABASE_URL = "https://jhtlocpstvvemmjmxdsf.supabase.co";
+  const SUPABASE_ANON_KEY =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpodGxvY3BzdHZ2ZW1tam14ZHNmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUzNzE3MDQsImV4cCI6MjA4MDk0NzcwNH0.yhxGHTb1HHCKeDPo5g9SvH6Zgrhr-fx_McXhV7oDhTs";
+
+  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  // Simple auth guard: if no session → back to login
+  (async () => {
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) {
+      window.location.href = "index.html";
+    }
+  })();
+</script>
+
+

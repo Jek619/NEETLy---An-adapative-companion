@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NEETly – Login</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Inter", system-ui, sans-serif;
+    }
+
+    body {
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at top left, #4d79ff 0, #020617 40%);
+      color: #fff;
+    }
+
+    .wrapper {
+      width: 420px;
+      background: rgba(15, 23, 42, 0.9);
+      padding: 32px;
+      border-radius: 18px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(18px);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    .tagline {
+      text-align: center;
+      font-size: 13px;
+      color: #cbd5f5;
+      margin-bottom: 20px;
+    }
+
+    label {
+      font-size: 13px;
+      color: #d1ddff;
+    }
+
+    .input-group {
+      margin-bottom: 16px;
+    }
+
+    input {
+      width: 100%;
+      padding: 11px 12px;
+      margin-top: 5px;
+      border-radius: 10px;
+      border: none;
+      outline: none;
+      background: rgba(148, 163, 255, 0.18);
+      color: #f9fafb;
+      font-size: 14px;
+    }
+
+    input::placeholder {
+      color: #94a3c6;
+    }
+
+    .error {
+      color: #fb7185;
+      font-size: 12px;
+      margin-top: 4px;
+      min-height: 14px;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 11px;
+      border-radius: 10px;
+      border: none;
+      background: #4f46e5;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      background: #4338ca;
+    }
+
+    .switch {
+      margin-top: 16px;
+      text-align: center;
+      font-size: 13px;
+      color: #9ca3ff;
+      cursor: pointer;
+    }
+
+    .switch span {
+      color: #60a5fa;
+      font-weight: 600;
+    }
+
+    .login-error {
+      margin-top: 8px;
+      text-align: center;
+      font-size: 13px;
+      color: #fb7185;
+      min-height: 16px;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="wrapper">
+  <h2>Welcome to NEETly</h2>
+  <div class="tagline">Sign in to continue your adaptive NEET prep</div>
+
+  <form autocomplete="off" onsubmit="event.preventDefault(); validateLogin();">
+
+  <input type="text" style="display:none">
+  <input type="password" style="display:none">
+
+  <div class="input-group">
+    <label>Email</label>
+    <input 
+      type="email" 
+      id="email" 
+      name="fakeEmail"
+      placeholder="Enter your email"
+      autocomplete="off"
+      autocorrect="off"
+      autocapitalize="off"
+      spellcheck="false">
+    <div id="emailError" class="error"></div>
+  </div>
+
+  <div class="input-group">
+    <label>Password</label>
+    <input 
+      type="password" 
+      id="password"
+      name="fakePassword"
+      placeholder="Enter password"
+      autocomplete="new-password">
+    <div id="pwError" class="error"></div>
+  </div>
+
+  <button class="btn" type="submit">Login</button>
+
+</form>
+
+  <div class="login-error" id="loginError"></div>
+
+  <div class="switch" onclick="window.location.href='signup.html'">
+    New here? <span>Create an account</span>
+    <p style="margin-top:15px;">
+  <a href="admin-login.html" 
+     style="color:#8b5cf6; text-decoration:none; font-weight:600;">
+     Admin Login
+  </a>
+</p>
+  </div>
+</div>
+
+<!-- Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const SUPABASE_URL = "https://jhtlocpstvvemmjmxdsf.supabase.co";
+const SUPABASE_ANON_KEY =
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpodGxvY3BzdHZ2ZW1tam14ZHNmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUzNzE3MDQsImV4cCI6MjA4MDk0NzcwNH0.yhxGHTb1HHCKeDPo5g9SvH6Zgrhr-fx_McXhV7oDhTs";
+
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// 🔥 Auto redirect if already logged in
+(async () => {
+  const { data: { session } } = await sb.auth.getSession();
+
+  if (session) {
+    const email = session.user.email;
+
+    if (email === "pkanagha738@gmail.com") {
+      window.location.href = "admin.html";
+    } else {
+      window.location.href = "dashboard.html";
+    }
+  }
+})();
+
+async function validateLogin() {
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
+
+  const emailErr = document.getElementById("emailError");
+  const pwErr = document.getElementById("pwError");
+  const loginError = document.getElementById("loginError");
+
+  emailErr.textContent = "";
+  pwErr.textContent = "";
+  loginError.textContent = "";
+
+  let valid = true;
+  const emailPattern = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+
+  if (!email) {
+    emailErr.textContent = "Email is required";
+    valid = false;
+  } else if (!emailPattern.test(email)) {
+    emailErr.textContent = "Enter a valid email";
+    valid = false;
+  }
+
+  if (!password) {
+    pwErr.textContent = "Password is required";
+    valid = false;
+  }
+
+  if (!valid) return;
+
+  loginError.textContent = "Signing you in...";
+
+  const { data, error } = await sb.auth.signInWithPassword({
+    email,
+    password,
+  });
+
+  if (error) {
+    loginError.textContent = error.message;
+    return;
+  }
+
+  // 🔥 Redirect based on email
+  if (email === "pkanagha738@gmail.com") {
+    window.location.href = "admin.html";
+  } else {
+    window.location.href = "dashboard.html";
+  }
+}
+
+window.addEventListener("load", () => {
+  document.getElementById("email").value = "";
+  document.getElementById("password").value = "";
+});
+</script>
+
+</body>
+</html>

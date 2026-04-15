@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NEETly Dashboard</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <link rel="stylesheet" href="neetly.css">
+
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+
+        <div class="logo">
+            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135755.png"> NEETly System
+        </div>
+
+        <div class="menu-item active"><a href="dashboard.html">Dashboard</a></div>
+        <div class="menu-item"><a href="learn.html">Learn</a></div>
+        <div class="menu-item"><a href="studyhub.html">Study Hub</a></div>
+        <div class="menu-item"><a href="chat.html">Chat Assistant</a></div>
+
+        <!-- ✅ FIXED LINK TO REVISION PLANNER -->
+        <div class="menu-item"><a href="revision-planner.html">Revision Planner</a></div>
+
+    </div>
+
+    <!-- MAIN -->
+    <div class="main-container">
+
+        <div class="header">📊 NEETly Performance Dashboard</div>
+
+        <div class="grid">
+
+            <div class="card">
+                <h2>Your Rank <span id="rankBadge"></span></h2>
+                <p id="rankDesc" class="subtitle"></p>
+            </div>
+
+            <div class="card">
+                <h2>🔵 Accuracy Gauge</h2>
+                <canvas id="progressCircle" width="180" height="180"></canvas>
+            </div>
+
+            <div class="card">
+                <h2>🎯 Latest Quiz Result</h2>
+                <div id="latestResult">Loading...</div>
+            </div>
+
+            <div class="card">
+                <h2>📈 Performance Over Time</h2>
+                <canvas id="progressChart"></canvas>
+            </div>
+
+            <div class="card">
+                <h2>📉 Weak Topics</h2>
+                <div id="weakTopics">Loading...</div>
+            </div>
+
+            <div class="card">
+                <h2>🤖 AI Study Recommendations</h2>
+                <div id="aiRec">Loading...</div>
+            </div>
+
+            <div class="card">
+                <h2>📝 Quiz History</h2>
+                <div id="quizHistory">Loading...</div>
+            </div>
+
+            <!-- ⭐ LESSON PROGRESS CARD -->
+            <div class="card">
+                <h2>📘 Lesson Progress</h2>
+
+                <div class="progress-circle" id="lessonCircle" style="--p:0deg;">
+                    <span id="lessonPct">0%</span>
+                </div>
+
+                <p style="text-align:center;color:#243b66;font-weight:600;margin-top:10px;">
+                    <span id="completedCount">0</span> / <span id="totalCount">0</span> Lessons Completed
+                </p>
+
+                <div id="lessonList" style="max-height:150px;overflow:auto;margin-top:10px;">
+                    No completed lessons yet.
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+<script>
+
+    /* ------------------------- */
+    /* ORIGINAL SCRIPT (unchanged)
+    /* ------------------------- */
+
+    const latestResult = JSON.parse(localStorage.getItem("latestQuizResult") || "null");
+    const latestBox = document.getElementById("latestResult");
+    const rankBadge = document.getElementById("rankBadge");
+    const rankDesc = document.getElementById("rankDesc");
+    const weakBox = document.getElementById("weakTopics");
+    const aiBox = document.getElementById("aiRec");
+    const historyBox = document.getElementById("quizHistory");
+
+    if (!latestResult) {
+        latestBox.innerHTML = "<p>No quiz attempts yet.</p>";
+        weakBox.innerHTML = "No data.";
+        aiBox.innerHTML = "Take a quiz to get personalized study recommendations.";
+        historyBox.innerHTML = "No history.";
+    }
+
+    if (latestResult) {
+        latestBox.innerHTML = `
+            <p><b>Subject:</b> ${latestResult.subject}</p>
+            <p><b>Topic:</b> ${latestResult.topic}</p>
+            <p><b>Score:</b> ${latestResult.correct}/${latestResult.total}</p>
+            <p><b>Percentage:</b> ${latestResult.percentage}%</p>
+            <p><b>Difficulty:</b> ${latestResult.difficulty}</p>
+            <p><b>Time:</b> ${latestResult.timestamp}</p>
+        `;
+    }
+
+    function calculateRank(p) {
+        if (p >= 90) return { rank: "Diamond", class: "diamond", desc: "You're among the elite learners!" };
+        if (p >= 75) return { rank: "Gold", class: "gold", desc: "Excellent performance. Keep rising!" };
+        if (p >= 60) return { rank: "Silver", class: "silver", desc: "Good job! Improve consistently." };
+        if (p >= 40) return { rank: "Bronze", class: "bronze", desc: "You can do better with practice." };
+        return { rank: "Beginner", class: "legend", desc: "Start strong! Practice your weak areas." };
+    }
+
+    if (latestResult) {
+        const r = calculateRank(latestResult.percentage);
+        rankBadge.className = `badge ${r.class}`;
+        rankBadge.innerText = r.rank;
+        rankDesc.innerText = r.desc;
+    }
+
+
+    if (latestResult) {
+        if (latestResult.percentage >= 70) {
+            weakBox.innerHTML = `<p>You performed well! No weak topics detected.</p>`;
+        } else {
+            weakBox.innerHTML = `
+                <div class="weak-topic">
+                    <b>${latestResult.topic}</b> → ${latestResult.percentage}% accuracy  
+                    <br><span class="subtitle">Revise this topic for improvement.</span>
+                </div>
+            `;
+        }
+    }
+
+
+    if (latestResult) {
+        aiBox.innerHTML = `
+            <p>📌 Focus more on: <b>${latestResult.topic}</b></p>
+            <p>🧠 Recommended: Solve 15 MCQs on this topic.</p>
+            <p>⏳ Study Duration: 25–30 minutes today.</p>
+            <p>✨ Try again with Easy difficulty before moving to Hard.</p>
+        `;
+    }
+
+    let history = JSON.parse(localStorage.getItem("quizHistory") || "[]");
+
+    if (latestResult) {
+        history.push(latestResult);
+        localStorage.setItem("quizHistory", JSON.stringify(history));
+    }
+
+    if (history.length === 0) {
+        historyBox.innerHTML = "No quiz attempts yet.";
+    } else {
+        historyBox.innerHTML = history
+            .slice(-5)
+            .reverse()
+            .map(h => `
+            <div class="history-item">
+                <b>${h.subject} - ${h.topic}</b><br>
+                Score: ${h.correct}/${h.total} (${h.percentage}%)<br>
+                <span class="subtitle">${h.timestamp}</span>
+            </div>
+        `)
+        .join("");
+    }
+
+    function drawGauge(percentage) {
+        const c = document.getElementById("progressCircle");
+        const ctx = c.getContext("2d");
+        ctx.clearRect(0, 0, c.width, c.height);
+
+        const center = 90;
+        const radius = 70;
+
+        ctx.beginPath();
+        ctx.arc(center, center, radius, 0, 2 * Math.PI);
+        ctx.strokeStyle = "#dce3f2";
+        ctx.lineWidth = 12;
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.arc(
+            center,
+            center,
+            radius,
+            -Math.PI / 2,
+            (percentage / 100) * 2 * Math.PI - Math.PI / 2
+        );
+        ctx.strokeStyle = "#3e6bff";
+        ctx.lineWidth = 12;
+        ctx.lineCap = "round";
+        ctx.stroke();
+
+        ctx.font = "22px Poppins";
+        ctx.fillStyle = "#243b66";
+        ctx.textAlign = "center";
+        ctx.fillText(percentage + "%", center, center + 8);
+    }
+
+    drawGauge(latestResult ? latestResult.percentage : 0);
+
+    const labels = history.map(h => h.topic);
+    const scores = history.map(h => h.percentage);
+
+    new Chart(document.getElementById("progressChart"), {
+        type: "line",
+        data: {
+            labels: labels,
+            datasets: [{
+                label: "Accuracy (%)",
+                data: scores,
+                borderWidth: 3,
+                borderColor: "#3e6bff",
+                fill: false,
+                tension: 0.3
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { beginAtZero: true, max: 100 }
+            }
+        }
+    });
+
+    /* -------- LESSON PROGRESS -------- */
+
+    const lessons = JSON.parse(localStorage.getItem("neetly_lessons") || "{}");
+
+    const total = Object.keys(lessons).length || 0;
+    let completed = 0;
+    let completedItems = [];
+
+    for (let id in lessons) {
+        if (lessons[id].completed) {
+            completed++;
+            completedItems.push(lessons[id]);
+        }
+    }
+
+    let pct = total === 0 ? 0 : Math.round((completed / total) * 100);
+
+    document.getElementById("lessonPct").innerText = pct + "%";
+    document.getElementById("lessonCircle").style.setProperty("--p", (pct * 3.6) + "deg");
+    document.getElementById("completedCount").innerText = completed;
+    document.getElementById("totalCount").innerText = total;
+
+    let list = document.getElementById("lessonList");
+    if (completedItems.length === 0) {
+        list.innerHTML = "No completed lessons yet.";
+    } else {
+        list.innerHTML = completedItems
+            .map(i => `<div class="lesson-list-item"><b>${i.chapterTitle}</b> — ${i.score}%</div>`)
+            .join("");
+    }
+
+</script>
+
+</body>
+</html>

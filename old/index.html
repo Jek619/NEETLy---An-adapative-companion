@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NEETly – Login</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* --- Global Page Styling --- */
+    body {
+      margin: 0;
+      font-family: "Inter", sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: linear-gradient(135deg, #e3e7ef, #f4f6f8 40%, #d9dde4);
+      background-size: cover;
+      backdrop-filter: blur(20px);
+    }
+
+    /* --- Glassmorphism Container --- */
+    .container {
+      width: 350px;
+      padding: 35px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(25px);
+      border: 1px solid rgba(255, 255, 255, 0.45);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+      text-align: center;
+    }
+
+    h2 {
+      font-weight: 600;
+      margin-bottom: 25px;
+      color: #1a1a1a;
+      letter-spacing: -0.5px;
+      font-size: 26px;
+    }
+
+    /* --- Input Fields --- */
+    .input-group {
+      text-align: left;
+      margin-bottom: 20px;
+    }
+
+    label {
+      font-size: 14px;
+      font-weight: 500;
+      color: #333;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-top: 6px;
+      border-radius: 12px;
+      border: 1px solid #d0d0d0;
+      background: rgba(255, 255, 255, 0.6);
+      font-size: 14px;
+      transition: 0.25s;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #7aa6ff;
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: 0 0 0 4px rgba(122,166,255,0.25);
+    }
+
+    .error {
+      color: #d9534f;
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    /* --- Login Button --- */
+    .btn {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #4c8dff, #2b6bff);
+      color: white;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.25s;
+      margin-top: 10px;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 60, 255, 0.2);
+    }
+
+    /* --- Social Buttons --- */
+    .social-btn {
+      width: 100%;
+      padding: 12px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .google {
+      background: #fff;
+      border: 1px solid #ddd;
+    }
+
+    .facebook {
+      background: #1877f2;
+      color: white;
+    }
+
+    .switch {
+      margin-top: 18px;
+      font-size: 14px;
+      color: #333;
+      cursor: pointer;
+    }
+
+    .switch span {
+      color: #2b6bff;
+      font-weight: 600;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+  <h2>NEETly Login</h2>
+
+  <button class="social-btn google">
+    <img src="https://www.svgrepo.com/show/475656/google-color.svg" width="20">
+    Sign in with Google
+  </button>
+
+  <button class="social-btn facebook">
+    <img src="https://www.svgrepo.com/show/448224/facebook.svg" width="20">
+    Sign in with Facebook
+  </button>
+
+  <div style="margin: 20px 0; opacity: 0.6;">— or —</div>
+
+  <div class="input-group">
+    <label>Email</label>
+    <input type="email" id="email" placeholder="Enter email" />
+    <div id="emailError" class="error"></div>
+  </div>
+
+  <div class="input-group">
+    <label>Password</label>
+    <input type="password" id="password" placeholder="Enter password" />
+    <div id="pwError" class="error"></div>
+  </div>
+
+  <button class="btn" onclick="validateLogin()">Login</button>
+
+  <div class="switch" onclick="window.location.href='signup.html'">
+    Don't have an account? <span>Sign Up</span>
+  </div>
+</div>
+
+<script>
+function validateLogin() {
+  alert("Login validated! (Add your actual logic)");
+  window.location.href = "dashboard.html";
+}
+</script>
+
+</body>
+</html>
+

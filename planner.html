@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Revision Planner</title>
+
+  <!-- Inter font (same as chat.html) -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="neetly.css">
+
+  <style>
+    :root{
+      --bg:#fff7f1; --card:#ffffff; --accent:#FF8A3D; --muted:#667085;
+      --glass: rgba(255,255,255,0.6);
+    }
+
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      background:linear-gradient(180deg,#f0f6ff 0%,var(--bg) 100%);
+      font-family:'Inter',system-ui,-apple-system,BlinkMacSystemFont,
+        'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+      font-size:14px;
+      color:#0f172a;
+    }
+
+    /* wrapper + layout */
+    .wrapper{display:flex;min-height:100vh}
+    .planner-container{flex:1;padding:45px;margin-left:240px}
+    .wrap{max-width:1200px;margin:0 auto}
+    header{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    header h1{margin:0;font-size:18px;font-weight:600}
+    .controls{display:flex;gap:10px;align-items:center}
+
+    /* buttons */
+    .btn {
+      background: var(--accent);
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 10px;
+      border: 0;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.25s ease;
+    }
+
+    .btn:hover { background:#ff7a22; }
+
+    .btn.ghost {
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid rgba(255,138,61,.45);
+    }
+
+    .btn.ghost:hover {
+      background: rgba(255,138,61,.12);
+    }
+
+    /* main grid */
+    .layout{display:grid;grid-template-columns:340px 1fr;gap:20px;margin-top:18px}
+    .card{background:var(--card);border-radius:14px;padding:16px;box-shadow:0 8px 28px rgba(14,30,80,.06)}
+    label{font-size:13px;color:var(--muted);display:block;margin-bottom:6px}
+    input,select,textarea{width:100%;padding:9px;border-radius:10px;border:1px solid #e8eefc;font-size:14px}
+    textarea{min-height:80px}
+
+    /* left panel */
+    .form-row{display:flex;gap:10px;margin-bottom:10px}
+    .task-list{margin-top:12px;max-height:360px;overflow:auto}
+    .task{display:flex;justify-content:space-between;gap:12px;padding:10px;border-radius:10px;border:1px solid #f0f4ff;background:#fff}
+    .pill{padding:6px 8px;border-radius:999px;font-size:12px}
+
+    /* weekly view */
+    .week{display:grid;grid-template-columns:repeat(7,1fr);gap:12px}
+    .day{background:#fff;padding:10px;border-radius:10px;border:1px solid #eef6ff;min-height:110px}
+    .day h3{margin:0;font-size:13px}
+    .slot{margin-top:8px;padding:8px;border-radius:8px;background:#fbfeff;border:1px solid #eef6ff}
+
+    /* responsive */
+    @media (max-width:980px){
+      .layout{grid-template-columns:1fr}
+      .planner-container{padding:18px;margin-left:0}
+      .sidebar{display:none}
+    }
+  </style>
+</head>
+
+<body>
+<div class="wrapper">
+
+<!-- ======================
+     COMMON SIDEBAR
+====================== -->
+<div class="sidebar">
+
+  <!-- TOP -->
+  <div class="sidebar-top">
+    <div class="welcome-box">
+      <span class="welcome-label">Welcome</span>
+      <span class="welcome-name" id="welcomeUser">JISHNUEK</span>
+    </div>
+  </div>
+
+  <!-- MENU (this grows) -->
+ <nav class="menu">
+  <a href="dashboard.html" class="menu-item">Dashboard</a>
+  <a href="learn.html" class="menu-item">Learn</a>
+  <a href="studyhub.html" class="menu-item">Study Hub</a>
+  <a href="chat.html" class="menu-item ">Chat Assistant</a>
+  <a href="notes.html" class="menu-item">Notes</a>
+  <a href="planner.html" class="menu-item active">Revision Planner</a>
+</nav>
+
+
+  <!-- BOTTOM -->
+  <div class="sidebar-bottom">
+    <a href="profile.html" class="menu-item profile-link">
+      <span class="profile-badge">👤</span>
+      <span>Profile</span>
+    </a>
+
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </div>
+
+</div>
+
+
+
+  <!-- MAIN -->
+  <div class="planner-container">
+    <div class="wrap">
+      <header>
+        <h1 class="page-title">📚 Revision Planner</h1>
+        <div class="controls">
+          <button id="exportBtn" class="btn ghost">Export PDF</button>
+          <button id="clearBtn" class="btn ghost">Clear</button>
+          <button id="helpBtn" class="btn">Help</button>
+        </div>
+      </header>
+
+      <div class="layout">
+        <!-- LEFT PANEL -->
+        <div>
+          <!-- Exam Planner Inputs -->
+          <div class="card" style="margin-bottom:14px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+              <div style="font-weight:700;font-size:15px">📅 NEET Exam Planner</div>
+              <div style="font-size:12px;color:var(--muted)">Smart schedule generator</div>
+            </div>
+
+            <label>Exam Date</label>
+            <input id="examDate" type="date" style="margin-bottom:10px">
+
+            <label>Daily Study Hours</label>
+            <input id="studyHours" type="number" min="1" max="14" value="5" style="margin-bottom:10px">
+
+            <label>Current Level</label>
+            <select id="level" style="margin-bottom:12px">
+              <option value="beginner">Beginner</option>
+              <option value="intermediate" selected>Intermediate</option>
+              <option value="advanced">Advanced</option>
+            </select>
+
+            <button id="genPlan" class="btn" style="width:100%">Generate Study Plan</button>
+          </div>
+
+          <!-- Add Task Card -->
+          <div class="card">
+            <div style="font-weight:700;font-size:15px;margin-bottom:10px;">Add Revision Task</div>
+
+            <div class="form-row">
+              <div style="flex:1">
+                <label>Title</label>
+                <input id="title" placeholder="Topic / Chapter name">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div style="flex:1">
+                <label>Subject</label>
+                <input id="subject" placeholder="Physics / Chemistry / Biology">
+              </div>
+              <div style="width:110px">
+                <label>Priority</label>
+                <select id="priority"><option value="low">Low</option><option value="med">Medium</option><option value="high">High</option></select>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div style="flex:1">
+                <label>Date</label>
+                <input id="date" type="date">
+              </div>
+              <div style="width:110px">
+                <label>Time (mins)</label>
+                <input id="duration" type="number" min="5" value="25">
+              </div>
+            </div>
+
+            <div>
+              <label>Notes (optional)</label>
+              <textarea id="notes"></textarea>
+            </div>
+
+            <div style="margin-top:10px;display:flex;gap:10px;">
+              <button id="addBtn" class="btn">Add Task</button>
+              <button id="saveSample" class="btn ghost">Add Sample</button>
+            </div>
+
+            <div style="margin-top:14px">
+              <label>Upcoming Tasks</label>
+              <div id="taskList" class="task-list">No tasks yet.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT PANEL -->
+        <div>
+          <div class="card">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+              <div>
+                <div style="font-weight:700">Weekly View</div>
+                <div id="weekRange" style="font-size:13px;color:var(--muted)">—</div>
+              </div>
+              <div style="display:flex;gap:8px">
+                <button id="prevWeek" class="btn ghost">Prev</button>
+                <button id="nextWeek" class="btn ghost">Next</button>
+                <button id="todayWeek" class="btn">Today</button>
+              </div>
+            </div>
+
+            <div id="weekGrid" class="week"></div>
+          </div>
+
+          <!-- NEW: Auto Study Plan (Premium C1) -->
+          <div class="card auto-plan" style="margin-top:14px">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div style="font-weight:700">📘 Auto Study Plan</div>
+              <div style="font-size:13px;color:var(--muted)">Polished plan & interactive roadmap</div>
+            </div>
+
+            <!-- Summary cards (animated) -->
+            <div id="planSummary" class="summary-cards" style="margin-top:12px">
+              <!-- injected -->
+            </div>
+
+            <!-- Accordion roadmap -->
+            <div class="roadmap" id="roadmapBox" aria-live="polite" style="margin-top:6px">
+              <!-- injected -->
+            </div>
+
+            <!-- Daily Routine -->
+            <div class="daily-routine" id="routineBox" style="margin-top:12px">
+              <!-- injected -->
+            </div>
+
+            <div style="display:flex;gap:10px;margin-top:12px;align-items:center">
+              <button id="createTasksBtn" class="btn ghost" style="display:none">Create Tasks from Plan</button>
+              <div style="font-size:12px;color:var(--muted)">Create scheduled tasks to populate your Weekly View (editable).</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script>
+  
+  // ---------- existing planner logic (kept intact) ----------
+  const uid = ()=>Math.random().toString(36).slice(2,9);
+  const read = ()=>JSON.parse(localStorage.getItem('revision_tasks')||'{}');
+  const write = (d)=>localStorage.setItem('revision_tasks',JSON.stringify(d));
+
+  const titleEl = document.getElementById('title');
+  const subjectEl = document.getElementById('subject');
+  const priorityEl = document.getElementById('priority');
+  const dateEl = document.getElementById('date');
+  const durationEl = document.getElementById('duration');
+  const notesEl = document.getElementById('notes');
+  const addBtn = document.getElementById('addBtn');
+  const taskList = document.getElementById('taskList');
+
+  const weekGrid = document.getElementById('weekGrid');
+  const weekRange = document.getElementById('weekRange');
+  const prevWeek = document.getElementById('prevWeek');
+  const nextWeek = document.getElementById('nextWeek');
+  const todayWeek = document.getElementById('todayWeek');
+
+  const exportBtn = document.getElementById('exportBtn');
+  const clearBtn = document.getElementById('clearBtn');
+  const helpBtn = document.getElementById('helpBtn');
+  const saveSample = document.getElementById('saveSample');
+
+  let tasks = read();
+  let weekStart = startOfWeek(new Date());
+
+  renderAll();
+
+
+  // ===============================
+// 🔥 SUPABASE PLANNER SAVE
+// ===============================
+async function savePlannerTaskToDB(task) {
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) return;
+
+  const user = session.user;
+
+  const { error } = await sb
+    .from("planner_tasks")
+    .insert({
+      user_id: user.id,
+      task: task.title,
+      date: task.date,
+      completed: task.done ?? false
+    });
+
+  if (error) {
+    console.error("❌ Planner DB insert failed:", error);
+  } else {
+    console.log("✅ Planner task saved to DB:", task.title);
+  }
+}
+
+
+  addBtn.onclick = async ()=>{
+  const title = titleEl.value.trim();
+  if(!title){ alert("Enter a title"); return; }
+
+  const id = uid();
+  const task = {
+    id,
+    title,
+    subject: subjectEl.value.trim() || "General",
+    priority: priorityEl.value,
+    date: dateEl.value || isoDate(new Date()),
+    duration: parseInt(durationEl.value),
+    notes: notesEl.value,
+    done: false
+  };
+
+  // 🔹 save locally (unchanged)
+  tasks[id] = task;
+  write(tasks);
+  renderAll();
+
+  // 🔥 save to DB
+  await savePlannerTaskToDB(task);
+};
+
+
+  saveSample.onclick = ()=>{
+    [
+      {title:"Mechanics - Projectile",subject:"Physics",priority:"high",date:isoDate(new Date()),duration:30},
+      {title:"Organic Chemistry",subject:"Chemistry",priority:"med",date:isoDate(addDays(new Date(),1)),duration:25},
+      {title:"Human Physiology",subject:"Biology",priority:"low",date:isoDate(addDays(new Date(),2)),duration:20}
+    ].forEach(t=>{tasks[uid()]={...t,done:false}});
+    write(tasks); renderAll();
+  };
+
+exportBtn.onclick = async () => {
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  let y = 20;
+
+  const userName = document.getElementById("welcomeUser")?.innerText || "Student";
+
+  // ===== TITLE =====
+  doc.setFontSize(22);
+  doc.setTextColor(30, 58, 138);
+  doc.text("NEET Revision Study Plan", 105, y, { align: "center" });
+  y += 15;
+
+  doc.setFontSize(12);
+  doc.setTextColor(0, 0, 0);
+
+  // ===== SUMMARY SECTION =====
+  if (window.__lastGeneratedPlan) {
+    const p = window.__lastGeneratedPlan;
+
+    doc.text(`Student: ${userName}`, 14, y); y += 7;
+    doc.text(`Exam in: ${p.diffDays} days`, 14, y); y += 7;
+    doc.text(`Level: ${p.level}`, 14, y); y += 7;
+    doc.text(`Daily Study Hours: ${p.hours}`, 14, y); y += 10;
+
+    doc.setFontSize(14);
+    doc.text("Daily Subject Allocation", 14, y);
+    y += 8;
+
+    doc.setFontSize(11);
+    doc.text(`Biology: ${p.dailyBio.toFixed(1)} hrs`, 20, y); y += 6;
+    doc.text(`Chemistry: ${p.dailyChem.toFixed(1)} hrs`, 20, y); y += 6;
+    doc.text(`Physics: ${p.dailyPhy.toFixed(1)} hrs`, 20, y); y += 10;
+  }
+
+  // ===== WEEKLY ROADMAP =====
+  doc.setFontSize(14);
+doc.setTextColor(0, 0, 0);
+doc.text("Weekly Roadmap", 14, y);
+y += 8;
+
+if (window.__lastGeneratedPlan) {
+
+  const plan = window.__lastGeneratedPlan;
+
+  function sliceChapters(chapters, perWeek, weekIndex){
+    return chapters.slice(
+      weekIndex * perWeek,
+      (weekIndex + 1) * perWeek
+    );
+  }
+
+  for (let w = 0; w < plan.weeks; w++) {
+
+    const bioSlice = sliceChapters(BIO_CHAPTERS, plan.weeklyRoadmapData.bioPerWeek, w);
+    const chemSlice = sliceChapters(CHEM_CHAPTERS, plan.weeklyRoadmapData.chemPerWeek, w);
+    const phySlice = sliceChapters(PHY_CHAPTERS, plan.weeklyRoadmapData.phyPerWeek, w);
+
+    // Skip empty weeks
+    if (!bioSlice.length && !chemSlice.length && !phySlice.length) continue;
+
+    if (y > 270) {
+      doc.addPage();
+      y = 20;
+    }
+
+    doc.setFontSize(12);
+    doc.setTextColor(22, 101, 52);
+    doc.text(`Week ${w + 1}`, 14, y);
+    y += 6;
+
+    doc.setFontSize(10);
+    doc.setTextColor(0, 0, 0);
+
+    bioSlice.forEach(ch => {
+      doc.text(`Bio: ${ch}`, 20, y);
+      y += 5;
+    });
+
+    chemSlice.forEach(ch => {
+      doc.text(`Chem: ${ch}`, 20, y);
+      y += 5;
+    });
+
+    phySlice.forEach(ch => {
+      doc.text(`Phy: ${ch}`, 20, y);
+      y += 5;
+    });
+
+    y += 5;
+  }
+}
+
+  // ===== TASKS SECTION =====
+  doc.addPage();
+  y = 20;
+
+  doc.setFontSize(16);
+  doc.setTextColor(0, 0, 0);
+  doc.text("Scheduled Tasks Overview", 14, y);
+  y += 10;
+
+  doc.setFontSize(11);
+
+  const sortedTasks = Object.values(tasks)
+    .sort((a,b)=>a.date.localeCompare(b.date));
+
+  if (sortedTasks.length === 0) {
+    doc.text("No scheduled tasks created yet.", 14, y);
+  } else {
+
+    sortedTasks.forEach(t => {
+
+      if (y > 270) {
+        doc.addPage();
+        y = 20;
+      }
+
+      doc.text(
+        `${t.date} | ${t.subject} | ${t.title} | ${t.duration} mins`,
+        14,
+        y
+      );
+
+      y += 7;
+    });
+  }
+
+  // ===== FOOTER =====
+  const totalPages = doc.getNumberOfPages();
+  for (let i = 1; i <= totalPages; i++) {
+    doc.setPage(i);
+    doc.setFontSize(9);
+    doc.setTextColor(120);
+    doc.text(
+      `Generated by NEETly • ${new Date().toLocaleDateString()} • Page ${i} of ${totalPages}`,
+      105,
+      290,
+      { align: "center" }
+    );
+  }
+
+  doc.save("NEET_Full_Study_Plan.pdf");
+};
+
+  clearBtn.onclick = ()=>{
+    if(confirm("Clear all tasks?")){
+      tasks={}; write(tasks); renderAll();
+    }
+  };
+
+  helpBtn.onclick = ()=>alert("Use the planner to add revision tasks and view weekly schedule.");
+
+  prevWeek.onclick = ()=>{weekStart=addDays(weekStart,-7);renderWeek()};
+  nextWeek.onclick = ()=>{weekStart=addDays(weekStart,7);renderWeek()};
+  todayWeek.onclick = ()=>{weekStart=startOfWeek(new Date());renderWeek()};
+
+  function renderAll(){renderList();renderWeek();}
+
+  function renderList(){
+    const arr = Object.values(tasks).sort((a,b)=>a.date.localeCompare(b.date));
+    taskList.innerHTML = arr.length? arr.map(t=>`
+      <div class="task">
+        <div>
+          <div><b>${t.title}</b></div>
+          <div style="font-size:12px;color:#555">${t.subject} • ${t.date} • ${t.duration} min</div>
+        </div>
+        <div class="pill ${t.priority}">${t.priority.toUpperCase()}</div>
+      </div>
+    `).join("") : "No tasks yet.";
+  }
+
+  function renderWeek(){
+    weekGrid.innerHTML="";
+    const days=[];
+    for(let i=0;i<7;i++){days.push(addDays(weekStart,i));}
+
+    weekRange.textContent = days[0].toLocaleDateString()+" — "+days[6].toLocaleDateString();
+
+    days.forEach(d=>{
+      const iso = isoDate(d);
+      const dayTasks = Object.values(tasks).filter(t=>t.date===iso);
+      const div = document.createElement("div");
+      div.className="day";
+      div.innerHTML = `<h3>${d.toLocaleDateString(undefined,{weekday:"short"})}</h3>
+                       <div style="color:#777;font-size:12px">${iso}</div>`+
+                       (dayTasks.length? dayTasks.map(t=>`
+                          <div class="slot">
+                            <b>${t.title}</b><br>
+                            <span style="font-size:12px;color:#777">${t.subject} – ${t.duration} min</span>
+                          </div>
+                        `).join("") : "<div>No revisions</div>");
+      weekGrid.appendChild(div);
+    });
+  }
+
+  function isoDate(d){ return new Date(d).toISOString().slice(0,10); }
+  function startOfWeek(d){ d=new Date(d); const day=d.getDay(); d.setDate(d.getDate()-day+1); d.setHours(0,0,0,0); return d; }
+  function addDays(d,n){ d=new Date(d); d.setDate(d.getDate()+n); d.setHours(0,0,0,0); return d; }
+
+  // ---------- PREMIUM AUTO STUDY PLAN (C1 - Accordion) ----------
+  const genBtn = document.getElementById('genPlan');
+  const planSummary = document.getElementById('planSummary');
+  const roadmapBox = document.getElementById('roadmapBox');
+  const routineBox = document.getElementById('routineBox');
+  const createTasksBtn = document.getElementById('createTasksBtn');
+
+  // sample NCERT chapter lists (can be expanded)
+  const BIO_CHAPTERS = [
+    "Diversity in Living World","Structural Organization in Plants","Structural Organization in Animals",
+    "Cell: Structure & Function","Biomolecules","Plant Physiology","Human Physiology",
+    "Reproduction","Genetics and Evolution","Biotechnology","Ecology & Environment"
+  ];
+  const CHEM_CHAPTERS = [
+    "Basic Concepts","Structure of Atom","Classification of Elements","Chemical Bonding","Thermodynamics",
+    "Equilibrium","Chemical Kinetics","Organic Basics","Hydrocarbons","Electrochemistry"
+  ];
+  const PHY_CHAPTERS = [
+    "Units & Measurement","Motion","Laws of Motion","Work & Energy","Rotational Motion",
+    "Gravitation","Properties of Matter","Heat & Thermodynamics","Waves","Electrostatics"
+  ];
+
+  function niceHours(h){
+    if(h % 1 === 0) return `${h} hrs`;
+    return `${h.toFixed(1)} hrs`;
+  }
+
+  genBtn.addEventListener('click', ()=> {
+    const examDate = document.getElementById('examDate').value;
+    const hours = parseFloat(document.getElementById('studyHours').value) || 5;
+    const level = document.getElementById('level').value;
+
+    if(!examDate){ alert('Please choose an exam date.'); return; }
+    const today = new Date(); const exam = new Date(examDate);
+    const diffDays = Math.ceil((exam - today) / (1000*60*60*24));
+    if(diffDays <= 0){ planSummary.innerHTML = '<div style="color:#ef4444">❗ Invalid exam date — choose a future date.</div>'; roadmapBox.innerHTML=''; routineBox.innerHTML=''; createTasksBtn.style.display='none'; return; }
+
+    // ratios tuned for NEET
+    const ratios = { bio:0.45, chem:0.30, phy:0.25 };
+    if(level==='beginner'){ ratios.bio=0.48; ratios.chem=0.32; ratios.phy=0.20; }
+    if(level==='advanced'){ ratios.bio=0.42; ratios.chem=0.28; ratios.phy=0.30; }
+
+    const dailyBio = +(hours * ratios.bio);
+    const dailyChem = +(hours * ratios.chem);
+    const dailyPhy = +(hours * ratios.phy);
+
+    const weeks = Math.max(1, Math.ceil(diffDays / 7));
+    const bioPerWeek = Math.ceil(BIO_CHAPTERS.length / weeks);
+    const chemPerWeek = Math.ceil(CHEM_CHAPTERS.length / weeks);
+    const phyPerWeek = Math.ceil(PHY_CHAPTERS.length / weeks);
+
+    // build summary cards
+    planSummary.innerHTML = '';
+    const cards = [
+      {title:'NEET Exam in', value: `${diffDays} days`},
+      {title:'Weeks', value: `${weeks}`},
+      {title:'Daily Allocation', value: `Bio: ${niceHours(dailyBio)} • Chem: ${niceHours(dailyChem)} • Phy: ${niceHours(dailyPhy)}`},
+      {title:'Level', value: level.charAt(0).toUpperCase()+level.slice(1) }
+    ];
+    cards.forEach((c,i)=>{
+      const el = document.createElement('div');
+      el.className = 'summary-card' + (i===0?' small':'');
+      el.style.animationDelay = (i*80)+'ms';
+      el.innerHTML = `<div class="summary-title">${c.title}</div><div class="summary-value">${c.value}</div>`;
+      planSummary.appendChild(el);
+    });
+
+    // build accordion roadmap (first 12 weeks visible)
+    roadmapBox.innerHTML = '';
+    const maxPossibleWeeks = Math.max(
+      Math.ceil(BIO_CHAPTERS.length / bioPerWeek),
+      Math.ceil(CHEM_CHAPTERS.length / chemPerWeek),
+      Math.ceil(PHY_CHAPTERS.length / phyPerWeek)
+    );
+
+const showWeeks = Math.min(maxPossibleWeeks, 24); // prevent huge lists
+    for(let w=0; w<showWeeks; w++){
+      const container = document.createElement('div'); container.className='accordion-item';
+      const header = document.createElement('div'); header.className='accordion-header';
+      const left = document.createElement('div'); left.className='left';
+      const badge = document.createElement('div'); badge.className='week-badge'; badge.innerText = `Week ${w+1}`;
+      left.appendChild(badge);
+      const summaryText = document.createElement('div'); summaryText.style.color='var(--muted)'; summaryText.style.fontSize='13px';
+      // slices
+      const bioSlice = BIO_CHAPTERS.slice(w*bioPerWeek, (w+1)*bioPerWeek);
+      const chemSlice = CHEM_CHAPTERS.slice(w*chemPerWeek, (w+1)*chemPerWeek);
+      const phySlice = PHY_CHAPTERS.slice(w*phyPerWeek, (w+1)*phyPerWeek);
+      const parts = [];
+      if(bioSlice.length) parts.push(`<strong>Bio</strong>: ${bioSlice.join(', ')}`);
+      if(chemSlice.length) parts.push(`<strong>Chem</strong>: ${chemSlice.join(', ')}`);
+      if(phySlice.length) parts.push(`<strong>Phy</strong>: ${phySlice.join(', ')}`);
+      summaryText.innerHTML = parts.join(' • ');
+      left.appendChild(summaryText);
+      header.appendChild(left);
+
+      const arrow = document.createElement('div'); arrow.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3e6bff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>`;
+      header.appendChild(arrow);
+
+      const body = document.createElement('div'); body.className='accordion-body';
+      // expanded chapter chips
+      const inner = document.createElement('div');
+      inner.className='chapter-list';
+      bioSlice.forEach(ch => { const c = document.createElement('div'); c.className='chip'; c.innerText = 'Bio: ' + ch; inner.appendChild(c); });
+      chemSlice.forEach(ch => { const c = document.createElement('div'); c.className='chip'; c.innerText = 'Chem: ' + ch; inner.appendChild(c); });
+      phySlice.forEach(ch => { const c = document.createElement('div'); c.className='chip'; c.innerText = 'Phy: ' + ch; inner.appendChild(c); });
+
+      body.appendChild(inner);
+
+      header.addEventListener('click', ()=> {
+        const open = body.classList.contains('open');
+        // close all others
+        document.querySelectorAll('.accordion-body.open').forEach(b => {
+          b.classList.remove('open'); b.style.maxHeight = 0;
+        });
+        if(!open){
+          body.classList.add('open');
+          // set maxHeight to content height
+          body.style.maxHeight = body.scrollHeight + 'px';
+        } else {
+          body.classList.remove('open'); body.style.maxHeight = 0;
+        }
+        // small smooth scroll when opening
+        if(!open) setTimeout(()=> header.scrollIntoView({behavior:'smooth', block:'center'}),120);
+      });
+
+      container.appendChild(header);
+      container.appendChild(body);
+      roadmapBox.appendChild(container);
+    }
+
+    // Daily routine card (polished)
+    routineBox.innerHTML = '';
+    const rc = document.createElement('div'); rc.className='routine-card';
+    rc.innerHTML = `
+      <div style="font-weight:700;margin-bottom:6px">Suggested Daily Routine</div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:8px">A balanced routine recommended for steady progress.</div>
+      <div class="routine-steps">
+        <div class="routine-step"><div class="icon">☀️</div><div><div style="font-weight:700">Warm-up</div><div style="font-size:13px;color:var(--muted)">20 min — Quick revision of yesterday's notes & flashcards</div></div></div>
+        <div class="routine-step"><div class="icon">🧬</div><div><div style="font-weight:700">Biology — Main Session</div><div style="font-size:13px;color:var(--muted)">${niceHours(dailyBio)} — NCERT + diagrams + MCQs</div></div></div>
+        <div class="routine-step"><div class="icon">🧪</div><div><div style="font-weight:700">Chemistry — Secondary</div><div style="font-size:13px;color:var(--muted)">${niceHours(dailyChem)} — Theory + PYQs</div></div></div>
+        <div class="routine-step"><div class="icon">⚛️</div><div><div style="font-weight:700">Physics — Focus</div><div style="font-size:13px;color:var(--muted)">${niceHours(dailyPhy)} — Concepts + practice</div></div></div>
+        <div class="routine-step"><div class="icon">🌙</div><div><div style="font-weight:700">Night — Reflection</div><div style="font-size:13px;color:var(--muted)">20–30 min — mistake notebook & quick revision</div></div></div>
+      </div>
+    `;
+    routineBox.appendChild(rc);
+
+    // show create tasks
+    createTasksBtn.style.display='inline-block';
+
+    // persist generated plan for task creation
+    window.__lastGeneratedPlan = {
+      examDate, diffDays, weeks, hours, level,
+      dailyBio, dailyChem, dailyPhy,
+      weeklyRoadmapData: { weeks, bioPerWeek, chemPerWeek, phyPerWeek }
+    };
+  });
+
+  // create tasks from the generated plan
+  createTasksBtn.addEventListener('click', ()=>{
+    const plan = window.__lastGeneratedPlan;
+    if(!plan){ alert('Generate a plan first.'); return; }
+    if(!confirm('Create scheduled tasks from this study plan? This will add multiple tasks to your planner.')) return;
+
+    let start = new Date(); start.setHours(0,0,0,0);
+    const weeks = plan.weeks;
+    const bioPerWeek = plan.weeklyRoadmapData.bioPerWeek;
+    const chemPerWeek = plan.weeklyRoadmapData.chemPerWeek;
+    const phyPerWeek = plan.weeklyRoadmapData.phyPerWeek;
+
+    function sliceChapters(chapters, perWeek, weekIndex){
+      return chapters.slice(weekIndex*perWeek, (weekIndex+1)*perWeek);
+    }
+
+    for(let w=0; w<weeks; w++){
+      const weekStartDate = addDays(start, w*7);
+      for(let d=0; d<6; d++){ // Mon-Sat
+        const dayDate = addDays(weekStartDate, d);
+        const iso = isoDate(dayDate);
+        const bioMin = Math.round(plan.dailyBio * 60);
+        const chemMin = Math.round(plan.dailyChem * 60);
+        const phyMin = Math.round(plan.dailyPhy * 60);
+
+        const bioList = sliceChapters(BIO_CHAPTERS, bioPerWeek, w);
+        const chemList = sliceChapters(CHEM_CHAPTERS, chemPerWeek, w);
+        const phyList = sliceChapters(PHY_CHAPTERS, phyPerWeek, w);
+
+        const bioTitle = bioList.length ? `${bioList[(d) % bioList.length]} — Revise` : 'Biology Revision';
+        const chemTitle = chemList.length ? `${chemList[(d) % chemList.length]} — Practice` : 'Chemistry Practice';
+        const phyTitle = phyList.length ? `${phyList[(d) % phyList.length]} — Problems` : 'Physics Practice';
+
+        const t1 = { id: uid(), title: bioTitle, subject: "Biology", priority: "high", date: iso, duration: bioMin, notes: "Auto-generated: follow weekly plan", done:false };
+        const t2 = { id: uid(), title: chemTitle, subject: "Chemistry", priority: "med", date: iso, duration: chemMin, notes: "Auto-generated: follow weekly plan", done:false };
+        const t3 = { id: uid(), title: phyTitle, subject: "Physics", priority: "med", date: iso, duration: phyMin, notes: "Auto-generated: follow weekly plan", done:false };
+
+        tasks[t1.id] = t1;
+        tasks[t2.id] = t2;
+        tasks[t3.id] = t3;
+
+        // 🔥 SAVE TO DB
+        savePlannerTaskToDB(t1);
+        savePlannerTaskToDB(t2);
+        savePlannerTaskToDB(t3);
+      }
+    }
+
+    write(tasks);
+    renderAll();
+    alert('Study tasks created from plan and saved to your planner.');
+  });
+
+  // keep tasks in sync across tabs
+  window.addEventListener('storage', ()=>{ tasks = read(); renderAll(); });
+
+  // initial small helpers (if plan exists previously)
+  (function initAccordions(){
+    // nothing to open by default
+  })();
+
+  // ensure renderAll initially
+  renderAll();
+
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const SUPABASE_URL = "https://jhtlocpstvvemmjmxdsf.supabase.co";
+  const SUPABASE_ANON_KEY =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpodGxvY3BzdHZ2ZW1tam14ZHNmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUzNzE3MDQsImV4cCI6MjA4MDk0NzcwNH0.yhxGHTb1HHCKeDPo5g9SvH6Zgrhr-fx_McXhV7oDhTs";
+
+  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  (async () => {
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) {
+      window.location.href = "index.html";
+      return;
+    }
+
+    const user = session.user;
+    const name =
+      user.user_metadata?.full_name ||
+      user.email.split("@")[0];
+
+    document.getElementById("welcomeUser").innerText = name;
+
+  })();
+
+  async function logout() {
+    await sb.auth.signOut();
+    window.location.href = "index.html";
+  }
+</script>
+
+
+</body>
+</html>

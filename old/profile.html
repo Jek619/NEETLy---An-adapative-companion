@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEETly – Profile Setup</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* (unchanged styles) */
+    </style>
+</head>
+
+<body>
+
+    <!-- UPDATED SIDEBAR -->
+    <div class="sidebar">
+        <div class="logo">
+            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135755.png"> NEETly System
+        </div>
+
+        <div class="menu-item"><a href="dashboard.html">Dashboard</a></div>
+        <div class="menu-item"><a href="studyhub.html">Study Hub</a></div>
+        <div class="menu-item"><a href="chat.html">Chat Assistant</a></div>
+        <div class="menu-item"><a href="planner.html">Revision Planner</a></div>
+    </div>
+
+    <!-- MAIN CONTENT (UNCHANGED) -->
+    <div class="main">
+
+        <div class="title">🧠 Adaptive Profile Setup</div>
+
+        <div class="card">
+            <h2>Set Up Your Learning Preferences</h2>
+
+            <!-- your existing form preserved -->
+            <label>Subject:</label>
+            <select id="subjectSelect">
+                <option value="">Select Subject</option>
+                <option>Physics</option>
+                <option>Chemistry</option>
+                <option>Biology</option>
+            </select>
+
+            <label>Knowledge Level:</label>
+            <div class="radio-group">
+                <label><input type="radio" name="lvl" value="Beginner"> Beginner</label>
+                <label><input type="radio" name="lvl" value="Intermediate"> Intermediate</label>
+                <label><input type="radio" name="lvl" value="Advanced"> Advanced</label>
+            </div>
+
+            <label>Preferred Learning Style:</label>
+            <select id="styleSelect">
+                <option value="">Select Style</option>
+                <option>Visual (Diagrams)</option>
+                <option>Text Explanation</option>
+                <option>Video Lessons</option>
+            </select>
+
+            <button class="btn" onclick="saveProfile()">Save Profile</button>
+
+            <div id="successBox" class="success-box">✔ Profile Saved Successfully!</div>
+        </div>
+    </div>
+
+<script>
+  /* unchanged JS */
+</script>
+
+</body>
+</html>

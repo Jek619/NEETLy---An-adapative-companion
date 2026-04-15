@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>NEETly Notes</title>
+  <link rel="stylesheet" href="neetly.css">
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      margin:0;
+      font-family:'Inter',system-ui;
+      font-size:14px;
+      color:#0f172a;
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sidebar-top">
+    <div class="welcome-box">
+      <span class="welcome-label">Welcome</span>
+      <span class="welcome-name" id="welcomeUser">USER</span>
+    </div>
+  </div>
+
+  <nav class="menu">
+    <a href="dashboard.html" class="menu-item">Dashboard</a>
+    <a href="learn.html" class="menu-item">Learn</a>
+    <a href="studyhub.html" class="menu-item">Study Hub</a>
+    <a href="chat.html" class="menu-item">Chat Assistant</a>
+    <a href="notes.html" class="menu-item active">Notes</a>
+    <a href="planner.html" class="menu-item">Revision Planner</a>
+  </nav>
+
+  <div class="sidebar-bottom">
+    <a href="profile.html" class="menu-item profile-link">
+      <span class="profile-badge">👤</span>
+      <span>Profile</span>
+    </a>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="page notes-page">
+
+  <h1 class="page-title">Smart Notes</h1>
+
+  <div class="notes-wrapper">
+
+    <!-- CONTROLS -->
+    <div class="notes-controls card">
+
+      <div class="control-group">
+        <label>Subject</label>
+        <select id="subjectSelect">
+          <option value="">Select Subject</option>
+        </select>
+      </div>
+
+      <div class="control-group">
+        <label>Topic</label>
+        <select id="topicSelect">
+          <option value="">Select Topic</option>
+        </select>
+      </div>
+
+      <!-- 🔥 NEW BUTTON -->
+      <button class="btn" id="viewNotesBtn" disabled>
+        📄 View Notes
+      </button>
+
+    </div>
+
+    <!-- CONTENT -->
+    <div class="notes-display card">
+      <div class="notes-header" id="notesHeader">
+        Key Points
+      </div>
+
+      <div id="notesContent">
+        Please select subject and topic.
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- SCRIPTS -->
+<script src="neet_notes_data.js"></script>
+<script src="neet_topics.js"></script>
+<script src="ncert_links.js"></script>
+<script src="notes_pdf_links.js"></script> <!-- 🔥 IMPORTANT -->
+<script src="notes.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>NEETly Admin</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+body{
+  margin:0;
+  font-family:Inter,sans-serif;
+  background:#f5f7fa;
+  display:flex;
+}
+
+/* SIDEBAR */
+.sidebar{
+  width:220px;
+  background:white;
+  height:100vh;
+  padding:25px;
+  border-right:1px solid #e5e7eb;
+}
+
+.sidebar h2{
+  color:#f97316;
+  margin-bottom:30px;
+}
+
+.sidebar button{
+  width:100%;
+  background:none;
+  border:none;
+  text-align:left;
+  padding:10px;
+  border-radius:6px;
+  cursor:pointer;
+  margin-bottom:8px;
+}
+
+.sidebar button:hover{
+  background:#f3f4f6;
+}
+
+/* MAIN */
+.main{
+  flex:1;
+  padding:40px;
+}
+
+.header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:30px;
+}
+
+button.action{
+  background:#f97316;
+  color:white;
+  border:none;
+  padding:6px 12px;
+  border-radius:6px;
+  cursor:pointer;
+  margin-left:10px;
+}
+
+/* KPI */
+.cards{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:20px;
+  margin-bottom:30px;
+}
+
+.card{
+  background:white;
+  padding:20px;
+  border-radius:10px;
+  box-shadow:0 3px 8px rgba(0,0,0,0.05);
+}
+
+/* Section */
+.section{
+  background:white;
+  padding:20px;
+  border-radius:10px;
+  box-shadow:0 3px 8px rgba(0,0,0,0.05);
+  margin-bottom:30px;
+}
+
+/* Table */
+table{
+  width:100%;
+  border-collapse:collapse;
+}
+
+th{
+  background:#f97316;
+  color:white;
+  padding:10px;
+  text-align:left;
+}
+
+td{
+  padding:10px;
+  border-bottom:1px solid #e5e7eb;
+}
+
+tr:hover{
+  background:#fff7ed;
+}
+
+/* MODAL */
+#deleteModal{
+  display:none;
+  position:fixed;
+  top:0; left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.4);
+  justify-content:center;
+  align-items:center;
+}
+
+.modal-box{
+  background:white;
+  padding:30px;
+  border-radius:10px;
+  width:350px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="sidebar">
+  <h2>NEETly</h2>
+  <button onclick="showDashboard()">Dashboard</button>
+  <button onclick="showUsers()">Users</button>
+  <button onclick="showResults()">Quiz Results</button>
+</div>
+
+<div class="main">
+
+<div class="header">
+  <h1>Admin Dashboard</h1>
+  <div>
+  <button class="action" onclick="downloadCSV()">Export CSV</button>
+  <button class="action" onclick="openDeleteModal()">Delete User</button>
+  <button class="action" onclick="logout()">Logout</button>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboardSection">
+
+  <div class="cards">
+    <div class="card">
+      <h4>Total Users</h4>
+      <h2 id="totalUsers">0</h2>
+    </div>
+    <div class="card">
+      <h4>Total Attempts</h4>
+      <h2 id="totalAttempts">0</h2>
+    </div>
+    <div class="card">
+      <h4>Average Score</h4>
+      <h2 id="avgScore">0%</h2>
+    </div>
+  </div>
+
+  <div class="section">
+<h3>Top Performing Students</h3>
+
+<table>
+<thead>
+<tr>
+<th>Rank</th>
+<th>Name</th>
+<th>Attempts</th>
+<th>Average Score</th>
+</tr>
+</thead>
+
+<tbody id="leaderboardTable"></tbody>
+
+</table>
+</div>
+
+</div>
+
+<!-- USERS -->
+<div id="usersSection" style="display:none;">
+  <div class="section">
+    <h3>All Users</h3>
+    <input 
+      id="searchUser"
+      placeholder="Search users..."
+      style="margin-bottom:10px;padding:8px;width:250px"
+      oninput="searchUsers()">
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Attempts</th>
+          <th>Role</th>
+        </tr>
+      </thead>
+      <tbody id="usersTable"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- QUIZ RESULTS -->
+<div id="resultsSection" style="display:none;">
+  <div class="section">
+    <h3>Quiz Results</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>User</th>
+          <th>Topic</th>
+          <th>Score</th>
+          <th>Percent</th>
+        </tr>
+      </thead>
+      <tbody id="resultsTable"></tbody>
+    </table>
+  </div>
+</div>
+
+</div>
+
+<!-- DELETE MODAL -->
+<div id="deleteModal">
+  <div class="modal-box">
+    <h3>Select User to Delete</h3>
+
+    <select id="userSelect" style="width:100%; padding:8px; margin:15px 0;">
+    </select>
+
+    <div style="text-align:right;">
+      <button onclick="closeDeleteModal()">Cancel</button>
+      <button class="action" onclick="deleteSelectedUser()">Delete</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const sb = supabase.createClient(
+  "https://jhtlocpstvvemmjmxdsf.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpodGxvY3BzdHZ2ZW1tam14ZHNmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUzNzE3MDQsImV4cCI6MjA4MDk0NzcwNH0.yhxGHTb1HHCKeDPo5g9SvH6Zgrhr-fx_McXhV7oDhTs"
+);
+
+let allUsers = [];
+let allData = [];
+
+// 🔐 Protect Admin Page
+async function initAdmin() {
+
+  const { data } = await sb.auth.getUser();
+
+  if (!data.user) {
+    window.location.href = "admin-login.html";
+    return;
+  }
+
+  await loadData();
+}
+
+// LOAD DATA
+async function loadData() {
+
+  const { data: resultsData, error: rError } =
+    await sb.from("quiz_results").select("*");
+
+  const { data: usersData, error: uError } =
+    await sb.from("profiles").select("*");
+
+  if (rError) console.log(rError);
+  if (uError) console.log(uError);
+
+  allData = resultsData || [];
+  allUsers = usersData || [];
+
+  updateDashboard();
+  loadUsers();
+  loadResults();
+  loadLeaderboard();
+}
+
+function openDeleteModal(){
+
+  const select = document.getElementById("userSelect");
+  select.innerHTML = "";
+
+  allUsers.forEach(user => {
+
+    const option = document.createElement("option");
+
+    option.value = user.id;
+    option.textContent = user.full_name || user.email || user.id;
+
+    select.appendChild(option);
+
+  });
+
+  document.getElementById("deleteModal").style.display = "flex";
+
+}
+
+function closeDeleteModal() {
+  const modal = document.getElementById("deleteModal");
+  modal.style.display = "none";
+}
+
+async function deleteSelectedUser(){
+
+  const userId = document.getElementById("userSelect").value;
+
+  if(!userId){
+    alert("Select a user");
+    return;
+  }
+
+  const confirmDelete = confirm("Delete this user and all quiz results?");
+  if(!confirmDelete) return;
+
+  // Delete quiz results first
+  const { error: quizError } = await sb
+    .from("quiz_results")
+    .delete()
+    .eq("user_id", userId);
+
+  if(quizError){
+    console.log(quizError);
+  }
+
+  // Delete user profile
+  const { error } = await sb
+    .from("profiles")
+    .delete()
+    .eq("id", userId);
+
+  if(error){
+    alert("Error deleting user");
+    console.log(error);
+    return;
+  }
+
+  alert("User deleted successfully");
+
+  closeDeleteModal();
+
+  loadData(); // refresh dashboard
+
+}
+
+// DASHBOARD
+function updateDashboard() {
+
+  document.getElementById("totalUsers").innerText = allUsers.length;
+  document.getElementById("totalAttempts").innerText = allData.length;
+
+  const avg = allData.length
+    ? Math.round(allData.reduce((a, b) => a + b.percent, 0) / allData.length)
+    : 0;
+
+  document.getElementById("avgScore").innerText = avg + "%";
+
+  const subjects = { Physics: 0, Chemistry: 0, Biology: 0 };
+
+  allData.forEach(r => {
+    if (r.topic_id?.includes("Physics")) subjects.Physics++;
+    if (r.topic_id?.includes("Chemistry")) subjects.Chemistry++;
+    if (r.topic_id?.includes("Biology")) subjects.Biology++;
+  });
+}
+
+// USERS TABLE
+function loadUsers() {
+  const table = document.getElementById("usersTable");
+  table.innerHTML = "";
+
+  allUsers.forEach(user => {
+
+    const attempts = allData.filter(
+      r => r.user_id === user.id
+    ).length;
+
+    table.innerHTML += `
+      <tr>
+        <td>${user.full_name || "-"}</td>
+        <td>${attempts}</td>
+        <td>${user.role || "student"}</td>
+      </tr>
+    `;
+  });
+}
+
+// RESULTS TABLE
+function loadResults() {
+  const table = document.getElementById("resultsTable");
+  table.innerHTML = "";
+
+  allData.forEach(r => {
+    table.innerHTML += `
+      <tr>
+        <td>${r.user_id}</td>
+        <td>${r.topic_id}</td>
+        <td>${r.correct}/${r.total}</td>
+        <td>${r.percent}%</td>
+      </tr>
+    `;
+  });
+}
+
+function loadLeaderboard() {
+
+  const table = document.getElementById("leaderboardTable");
+  table.innerHTML = "";
+
+  const leaderboard = [];
+
+  allUsers.forEach(user => {
+
+    const userAttempts = allData.filter(
+      r => r.user_id === user.id
+    );
+
+    const attempts = userAttempts.length;
+
+    const avgScore = attempts > 0
+      ? Math.round(userAttempts.reduce((sum, r) => sum + r.percent, 0) / attempts)
+      : 0;
+
+    leaderboard.push({
+      name: user.full_name || "Unknown",
+      attempts: attempts,
+      avg: avgScore
+    });
+
+  });
+
+  leaderboard
+    .sort((a, b) => b.avg - a.avg)
+    .slice(0, 5)
+    .forEach((user, index) => {
+
+      const row = document.createElement("tr");
+
+      row.innerHTML = `
+        <td>${index + 1}</td>
+        <td>${user.name}</td>
+        <td>${user.attempts}</td>
+        <td>${user.avg}%</td>
+      `;
+
+      table.appendChild(row);
+
+    });
+
+}
+
+// ✅ NAVIGATION (THIS WAS MISSING)
+function showDashboard() {
+  document.getElementById("dashboardSection").style.display = "block";
+  document.getElementById("usersSection").style.display = "none";
+  document.getElementById("resultsSection").style.display = "none";
+}
+
+function showUsers() {
+  document.getElementById("dashboardSection").style.display = "none";
+  document.getElementById("usersSection").style.display = "block";
+  document.getElementById("resultsSection").style.display = "none";
+}
+
+function showResults() {
+  document.getElementById("dashboardSection").style.display = "none";
+  document.getElementById("usersSection").style.display = "none";
+  document.getElementById("resultsSection").style.display = "block";
+}
+
+// START
+initAdmin();
+
+async function logout() {
+
+  const confirmLogout = confirm("Are you sure you want to logout?");
+  if (!confirmLogout) return;
+
+  await sb.auth.signOut();
+
+  // Clear everything
+  window.location.href = "admin-login.html";
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NEETly Dashboard</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="neetly.css">
+</head>
+
+<body>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = "https://jhtlocpstvvemmjmxdsf.supabase.co";
+        const SUPABASE_ANON_KEY =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpodGxvY3BzdHZ2ZW1tam14ZHNmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUzNzE3MDQsImV4cCI6MjA4MDk0NzcwNH0.yhxGHTb1HHCKeDPo5g9SvH6Zgrhr-fx_McXhV7oDhTs";
+
+        const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        async function logout() {
+        await sb.auth.signOut();
+        window.location.href = "index.html";
+        }
+
+    </script>
+
+<!-- ======================
+     COMMON SIDEBAR
+====================== -->
+<div class="sidebar">
+
+  <!-- TOP -->
+  <div class="sidebar-top">
+    <div class="welcome-box">
+  <span class="welcome-label">Welcome</span>
+      <span class="welcome-name" id="welcomeUser">USER</span>
+</div>
+
+  </div>
+
+  <!-- MENU -->
+  <nav class="menu">
+  <a href="dashboard.html" class="menu-item active">Dashboard</a>
+  <a href="learn.html" class="menu-item">Learn</a>
+  <a href="studyhub.html" class="menu-item">Study Hub</a>
+  <a href="chat.html" class="menu-item" >Chat Assistant</a>
+  <a href="notes.html" class="menu-item">Notes</a>
+  <a href="planner.html" class="menu-item">Revision Planner</a>
+</nav>
+
+
+  <!-- BOTTOM -->
+  <div class="sidebar-bottom">
+
+    <!-- PROFILE BUTTON -->
+    <a href="profile.html" class="menu-item profile-link">
+  <span class="profile-badge">👤</span>
+  <span>Profile</span>
+</a>
+
+
+    <!-- LOGOUT -->
+    <button class="logout-btn" onclick="logout()">Logout</button>
+
+  </div>
+
+</div>
+
+    <!-- MAIN -->
+    <div class="main-container">
+
+        <div class="header">📊 Performance Dashboard</div>
+
+        <div class="grid">
+
+            <div class="card">
+                <h2>Your Rank <span id="rankBadge"></span></h2>
+                <p id="rankDesc" class="subtitle"></p>
+            </div>
+
+            <div class="card">
+                <h2>🔵 Accuracy Gauge</h2>
+                <div id="accuracyWrap">
+                    <div class="skeleton skeleton-circle"></div>
+                </div>
+
+            </div>
+
+            <div class="card">
+                <h2>🎯 Latest Quiz Result</h2>
+                <div id="latestResult" class="skeleton-wrap">
+                    <div class="skeleton skeleton-line long"></div>
+                    <div class="skeleton skeleton-line medium"></div>
+                    <div class="skeleton skeleton-line short"></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>📉 Weak Topics</h2>
+                <div id="weakTopics">
+                    <div class="skeleton skeleton-line medium"></div>
+                    <div class="skeleton skeleton-line short"></div>
+                </div>
+
+            </div>
+
+            <div class="card">
+                <h2>🤖 AI Study Recommendations</h2>
+                <div id="aiRec">
+                    <div class="skeleton skeleton-line long"></div>
+                    <div class="skeleton skeleton-line long"></div>
+                    <div class="skeleton skeleton-line medium"></div>
+                </div>
+
+            </div>
+
+            <div class="card">
+                <h2>📝 Quiz History</h2>
+                <div id="quizHistory">
+                    <div class="skeleton skeleton-line long"></div>
+                    <div class="skeleton skeleton-line long"></div>
+                    <div class="skeleton skeleton-line medium"></div>
+                </div>
+
+            </div>
+
+            <!-- ⭐ LESSON PROGRESS CARD -->
+            <div class="card">
+                <h2>📘 Lesson Progress</h2>
+
+                <div class="progress-circle" id="lessonCircle" style="--p:0deg;">
+                    <span id="lessonPct">0%</span>
+                </div>
+
+                <p style="text-align:center;color:#243b66;font-weight:600;margin-top:10px;">
+                    <span id="completedCount">0</span> / <span id="totalCount">0</span> Lessons Completed
+                </p>
+
+                <div id="lessonList" style="max-height:150px;overflow:auto;margin-top:10px;">
+                    No completed lessons yet.
+                </div>
+            </div>
+
+        </div>
+
+<script>
+    let latestResult = null;
+
+    /* ===============================
+    FETCH FUNCTIONS
+    ================================ */
+
+    async function getLatestQuizResult() {
+    const { data: { user } } = await sb.auth.getUser();
+    if (!user) return null;
+
+    const { data } = await sb
+        .from("quiz_results")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(1);
+
+    return data?.[0] || null;
+    }
+
+    async function getQuizHistory() {
+    const { data: { user } } = await sb.auth.getUser();
+    if (!user) return [];
+
+    const { data } = await sb
+        .from("quiz_results")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(5);
+
+    return data || [];
+    }
+
+    async function getLessonProgress() {
+    const { data: { user } } = await sb.auth.getUser();
+    if (!user) return [];
+
+    const { data, error } = await sb
+        .from("user_progress")
+        .select("topic_id, completed, score")
+        .eq("user_id", user.id);
+
+    if (error) {
+        console.error("Lesson progress error:", error);
+        return [];
+    }
+
+    return data || [];
+    }
+
+
+
+
+    /* ===============================
+    HELPERS
+    ================================ */
+
+    function calculateRank(p) {
+    if (p >= 90) return { rank: "Diamond", class: "diamond", desc: "You're among the elite learners!" };
+    if (p >= 75) return { rank: "Gold", class: "gold", desc: "Excellent performance. Keep rising!" };
+    if (p >= 60) return { rank: "Silver", class: "silver", desc: "Good job! Improve consistently." };
+    if (p >= 40) return { rank: "Bronze", class: "bronze", desc: "You can do better with practice." };
+    return { rank: "Beginner", class: "legend", desc: "Start strong! Practice your weak areas." };
+    }
+
+    function drawGauge(percentage) {
+    const wrap = document.getElementById("accuracyWrap");
+    wrap.innerHTML = `<canvas id="progressCircle" width="180" height="180"></canvas>`;
+
+    const c = document.getElementById("progressCircle");
+    const ctx = c.getContext("2d");
+
+    const center = 90;
+    const radius = 70;
+
+    ctx.beginPath();
+    ctx.arc(center, center, radius, 0, 2 * Math.PI);
+    ctx.strokeStyle = "#dce3f2";
+    ctx.lineWidth = 12;
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.arc(
+        center,
+        center,
+        radius,
+        -Math.PI / 2,
+        (percentage / 100) * 2 * Math.PI - Math.PI / 2
+    );
+    ctx.strokeStyle = "#3e6bff";
+    ctx.lineWidth = 12;
+    ctx.lineCap = "round";
+    ctx.stroke();
+
+    ctx.font = "22px Inter";
+    ctx.fillStyle = "#243b66";
+    ctx.textAlign = "center";
+    ctx.fillText(percentage + "%", center, center + 8);
+    }
+
+    /* ===============================
+    DASHBOARD LOAD
+    ================================ */
+
+    async function loadDashboard() {
+    const latestBox = document.getElementById("latestResult");
+    const weakBox = document.getElementById("weakTopics");
+    const aiBox = document.getElementById("aiRec");
+    const historyBox = document.getElementById("quizHistory");
+    const rankBadge = document.getElementById("rankBadge");
+    const rankDesc = document.getElementById("rankDesc");
+
+    latestResult = await getLatestQuizResult();
+
+    /* ---------- EMPTY STATE ---------- */
+    if (!latestResult) {
+        latestBox.innerHTML = "<p class='subtitle'>No quiz attempts yet.</p>";
+        weakBox.innerHTML = "<p class='subtitle'>No weak topics yet.</p>";
+        aiBox.innerHTML = "<p class='subtitle'>Complete a quiz to get AI recommendations.</p>";
+        historyBox.innerHTML = "<p class='subtitle'>No quiz history available.</p>";
+
+        rankBadge.innerText = "Beginner";
+        rankBadge.className = "badge legend";
+        rankDesc.innerText = "Start your preparation journey 🚀";
+
+        drawGauge(0);
+        return;
+    }
+
+    /* ---------- LATEST QUIZ ---------- */
+const accuracy = latestResult.percent;
+
+
+latestBox.innerHTML = `
+  <p><b>Topic:</b> ${latestResult.topic_id}</p>
+  <p><b>Score:</b> ${latestResult.correct}/${latestResult.total}</p>
+  <p><b>Accuracy:</b> ${latestResult.percent}%</p>
+`;
+
+const r = calculateRank(accuracy);
+rankBadge.className = `badge ${r.class}`;
+rankBadge.innerText = r.rank;
+rankDesc.innerText = r.desc;
+
+drawGauge(accuracy);
+
+    /* ---------- WEAK TOPIC ---------- */
+    weakBox.innerHTML =
+        accuracy >= 70
+        ? "<p>You performed well! 🎉</p>"
+        : `<b>${latestResult.topic_id}</b> → ${accuracy}% accuracy`;
+    drawGauge(accuracy);
+
+
+    /* ---------- HISTORY ---------- */
+    const history = await getQuizHistory();
+
+    if (history.length > 0) {
+        const weakest = history.reduce((min, h) =>
+            h.percent < min.percent ? h : min
+        );
+
+        aiBox.innerHTML = `
+            <p>📌 Focus on <b>${weakest.topic_id}</b></p>
+            <p>🧠 Solve 15 MCQs today</p>
+            <p>⏳ Study 25–30 minutes</p>
+        `;
+        } else {
+        aiBox.innerHTML = "<p>No AI recommendations yet.</p>";
+    }
+
+    historyBox.innerHTML =
+    history.length === 0
+        ? "No quiz attempts yet."
+        : history.map(h => `
+        <div class="history-item">
+            <b>${h.topic_id}</b><br>
+            ${h.percent}%
+        </div>
+        `).join("");
+    }
+
+    /* ===============================
+    LESSON PROGRESS
+    ================================ */
+
+    async function loadLessonProgress() {
+    const lessons = await getLessonProgress();
+
+    const total = lessons.length;
+    const completed = lessons.filter(l => l.completed).length;
+    const pct = total === 0 ? 0 : Math.round((completed / total) * 100);
+
+    document.getElementById("lessonPct").innerText = pct + "%";
+    document.getElementById("lessonCircle")
+        .style.setProperty("--p", pct * 3.6 + "deg");
+
+    document.getElementById("completedCount").innerText = completed;
+    document.getElementById("totalCount").innerText = total;
+
+    const list = document.getElementById("lessonList");
+    list.innerHTML =
+        completed === 0
+        ? "No completed lessons yet."
+        : lessons
+            .filter(l => l.completed)
+            .map(l => `<div class="lesson-list-item">${l.topic_id}</div>`)
+            .join("");
+    }
+
+    /* ===============================
+    INIT
+    ================================ */
+
+    (async () => {
+    await loadDashboard();
+    await loadLessonProgress();
+    })();
+</script>
+</div>
+
+</script>
+<script>
+(async () => {
+    const { data: { session }, error } = await sb.auth.getSession();
+
+    if (!session) {
+        window.location.href = "index.html";
+        return;
+    }
+
+    const user = session.user;
+
+    const name =
+        user.user_metadata?.full_name ||
+        user.email.split("@")[0];
+
+    document.getElementById("welcomeUser").innerText = name.toUpperCase();
+})();
+</script>
+
+</body>
+</html>

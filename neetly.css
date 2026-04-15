@@ -1,0 +1,1866 @@
+/* ================================
+   NEETLY GLOBAL THEME
+   ================================ */
+:root {
+  --bg: #fff7f1;
+  --sidebar-bg: #ffffff;
+  --card-bg: #ffffff;
+  --accent: #ff7b3a;
+  --accent-strong: #f15d2a;
+  --accent-soft: #ffe1cc;
+  --text-main: #171825;
+  --text-muted: #7a7c8b;
+  --border-subtle: #f2e5da;
+  --shadow-soft: 0 14px 35px rgba(15, 23, 42, 0.08);
+  --radius-lg: 18px;
+  --radius-md: 12px;
+  --radius-pill: 999px;
+}
+
+/* ===============================
+   SIDEBAR — FINAL FIX
+================================ */
+
+.sidebar {
+  width: 260px;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  background: var(--sidebar-bg);
+  padding: 28px 20px;
+
+  border-right: 1px solid var(--border-subtle);
+  box-shadow: 6px 0 30px rgba(15, 23, 42, 0.04);
+
+  z-index: 100;
+}
+
+
+/* Reset-ish */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: "Poppins", "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text-main);
+}
+
+body {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ===============================
+   SIDEBAR LAYOUT — FIXED BOTTOM
+================================ */
+
+
+/* Menu grows and pushes bottom down */
+.menu {
+  padding: 12px 10px;
+  flex: 1;                   /* 🔥 THIS PUSHES BOTTOM DOWN */
+}
+
+/* Bottom section locked */
+.sidebar-bottom {
+  padding: 14px;
+  border-top: 1px solid #f1f5f9;
+}
+
+
+/* ===============================
+   WELCOME — MODERN HIGHLIGHT
+================================ */
+
+.welcome-box {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  padding: 14px 16px;
+  border-radius: 14px;
+
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12);
+}
+
+.welcome-label {
+  font-size: 17px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.welcome-name {
+  font-size: 21px;
+  font-weight: 700;
+  color: #0f172a;
+  letter-spacing: 0.2px;
+  text-transform: uppercase;
+}
+
+
+
+/* ===============================
+   PROFILE AVATAR — GLASS BADGE
+================================ */
+
+.profile-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Glass avatar badge */
+.profile-badge {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 16px;
+
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.12);
+
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* Animate badge on hover */
+.profile-link:hover .profile-badge {
+  transform: scale(1.08);
+  box-shadow: 0 10px 28px rgba(62, 107, 255, 0.25);
+}
+
+/* Active profile badge */
+.profile-link.active .profile-badge {
+  background: rgba(62, 107, 255, 0.25);
+  border-color: rgba(62, 107, 255, 0.45);
+}
+
+
+
+/* ================================
+   SHARED SIDEBAR
+   (used in dashboard / learn / studyhub / chat)
+   ================================ */
+
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.logo img {
+  width: 40px;
+  height: 40px;
+  border-radius: 14px;
+  background: #ffedd5;
+  padding: 6px;
+  object-fit: contain;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.menu-item {
+  padding: 11px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 15px;
+  color: var(--text-muted);
+  background: transparent;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: background 0.18s ease, color 0.18s ease, transform 0.15s ease;
+}
+
+.menu-item::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: transparent;
+}
+
+.menu-item:hover {
+  background: #fff4ec;
+  color: var(--text-main);
+  transform: translateX(2px);
+}
+
+.menu-item.active {
+  background: var(--accent);
+  color: #ffffff;
+  font-weight: 600;
+  box-shadow: 0 10px 25px rgba(241, 93, 42, 0.35);
+}
+
+.menu-item.active::before {
+  background: #fff;
+}
+
+.menu-item a {
+  text-decoration: none;
+  color: inherit;
+  flex: 1;
+}
+
+/* Premium / footer block if used */
+.sidebar-footer {
+  margin-top: auto;
+  background: #111827;
+  color: #f9fafb;
+  border-radius: 20px;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sidebar-footer-title {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.sidebar-footer small {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+/* ===============================
+   SIDEBAR TYPOGRAPHY — LOCKED
+================================ */
+
+
+ a {
+  text-decoration: none;
+}
+
+.welcome-text {
+  font-size: 25px;        /* SAME everywhere */
+  font-weight: 700;
+  line-height: 1.4;
+  color: #0f172a;
+}
+
+/* ===============================
+   SIDEBAR HOVER BACKGROUND ANIMATION
+================================ */
+
+/* Base menu item */
+.menu-item {
+  position: relative;
+  display: block;
+  padding: 10px 14px;
+  margin-bottom: 6px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #334155;
+  text-decoration: none;
+  overflow: hidden;
+  transition: color 0.25s ease;
+}
+
+/* Animated background layer */
+.menu-item::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(62, 107, 255, 0.12),
+    rgba(62, 107, 255, 0.04)
+  );
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.28s ease;
+  z-index: -1;
+  border-radius: 10px;
+}
+
+/* Hover effect */
+.menu-item:hover::before {
+  transform: scaleX(1);
+}
+
+.menu-item:hover {
+  color: #4e5364;
+}
+
+/* Active state (locked highlight) */
+.menu-item.active {
+  color: #000000;
+  font-weight: 600;
+}
+
+.menu-item.active::before {
+  transform: scaleX(1);
+  background: linear-gradient(
+    90deg,
+    rgba(62, 107, 255, 0.18),
+    rgba(62, 107, 255, 0.06)
+  );
+}
+
+
+
+/* ================================
+   LAYOUT FOR MAIN AREA
+   ================================ */
+
+/* ===============================
+   MAIN CONTENT — ALIGN FIX
+================================ */
+
+.main,
+.main-container,
+.chat-page,
+.planner-container {
+  margin-left: 240px;
+  padding: 32px 56px 32px 40px; /* 🔥 extra right padding */
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+
+.main-container,
+.main,
+.chat-container {
+  padding: 26px 32px;
+  flex: 1;
+  max-width: calc(100% - 260px);
+}
+
+.header,
+.title {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 4px 0 18px;
+}
+
+/* Top search + user area (you can wrap in a div if you want) */
+.topbar-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 22px;
+}
+
+.search-box {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fff;
+  border-radius: 999px;
+  border: 1px solid var(--border-subtle);
+  padding: 8px 16px;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.04);
+}
+
+.search-box input {
+  border: none;
+  outline: none;
+  flex: 1;
+  font-size: 14px;
+  color: var(--text-main);
+}
+
+.search-box input::placeholder {
+  color: #a1a1aa;
+}
+
+.search-icon {
+  font-size: 16px;
+  opacity: 0.7;
+}
+
+/* Right side user chip (use where needed) */
+.user-chip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 999px;
+  padding: 6px 12px;
+  background: #fff;
+  border: 1px solid var(--border-subtle);
+}
+
+.user-chip-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  background: #fee2e2;
+}
+
+.user-chip-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-chip-name {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.user-chip-role {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* ================================
+   CARD SYSTEM
+   ================================ */
+
+.card {
+  background: var(--card-bg);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-soft);
+  padding: 20px 20px 18px;
+}
+
+.card-compact {
+  padding: 16px;
+  border-radius: 14px;
+}
+
+.card-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.card-title {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.card-subtitle {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* Generic pill / badges */
+.pill {
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.pill-soft {
+  background: #f3f4ff;
+  color: #4b5563;
+}
+
+.pill-accent {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+}
+
+/* ================================
+   GRID HELPERS (used in dashboard/studyhub)
+   ================================ */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 18px;
+  width: 100%;
+}
+
+.grid-tight {
+  gap: 14px;
+}
+
+/* ================================
+   BUTTONS & INPUTS
+   ================================ */
+
+button,
+.btn {
+  border-radius: 10px;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 10px 16px;
+  cursor: pointer;
+  background: var(--accent);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: transform 0.12s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+button:hover,
+.btn:hover {
+  background: var(--accent-strong);
+  box-shadow: 0 10px 25px rgba(241, 93, 42, 0.3);
+  transform: translateY(-1px);
+}
+
+.btn-ghost {
+  background: #fff;
+  color: var(--accent-strong);
+  border: 1px solid var(--accent-soft);
+  box-shadow: none;
+}
+
+.btn-ghost:hover {
+  background: #fff7f2;
+}
+
+select,
+input[type="text"],
+textarea {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid var(--border-subtle);
+  padding: 10px 12px;
+  background: #fff;
+  font-size: 14px;
+  font-family: inherit;
+  outline: none;
+}
+
+select:focus,
+input[type="text"]:focus,
+textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px rgba(241, 93, 42, 0.3);
+}
+
+/* ================================
+   DASHBOARD-SPECIFIC TOUCHES
+   (for dashboard.html layout)
+   ================================ */
+
+.dashboard-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.learning-row {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 2fr) minmax(0, 1.4fr);
+  gap: 18px;
+}
+
+.learning-card {
+  border-radius: var(--radius-lg);
+  padding: 16px 18px 18px;
+  background: #fff;
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-soft);
+}
+
+.learning-card-title {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.learning-card-subject {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.progress-track {
+  width: 100%;
+  height: 7px;
+  border-radius: 999px;
+  background: #f3e3d8;
+  overflow: hidden;
+  margin: 8px 0;
+}
+
+.progress-bar {
+  height: 100%;
+  border-radius: inherit;
+  width: var(--value, 60%);
+  background: linear-gradient(90deg, #f97316, #facc15);
+}
+
+.learning-meta {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* Recommended video row */
+.recommended-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.video-card {
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-subtle);
+  background: #fff;
+  overflow: hidden;
+  box-shadow: var(--shadow-soft);
+  display: flex;
+  flex-direction: column;
+}
+
+.video-thumb {
+  position: relative;
+  height: 150px;
+  background: #e5e7eb;
+}
+
+.video-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.video-duration {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  background: rgba(15, 23, 42, 0.88);
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-size: 11px;
+}
+
+.video-body {
+  padding: 14px 16px 16px;
+}
+
+.video-title {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.video-meta {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* Metric cards bottom row */
+.metrics-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.metric-card {
+  flex: 1;
+  min-width: 180px;
+  border-radius: var(--radius-lg);
+  background: #fff;
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-soft);
+  padding: 16px 18px;
+}
+
+.metric-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.metric-value {
+  font-size: 22px;
+  font-weight: 700;
+}
+
+/* ================================
+   LEARN PAGE (learn.html)
+   ================================ */
+
+.lead {
+  color: var(--text-muted);
+  font-size: 13px;
+  margin-bottom: 16px;
+}
+
+.subjects {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 18px;
+}
+
+.subject-card {
+  background: #fff;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-soft);
+  padding: 18px 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.subject-title {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.subject-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.subject-meta {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.start-btn {
+  align-self: flex-start;
+  margin-top: 8px;
+}
+
+/* Topics grid & detail */
+.topics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px;
+  margin-top: 12px;
+}
+
+.topic-card {
+  background: #fff;
+  border-radius: 16px;
+  border: 1px solid var(--border-subtle);
+  padding: 12px 13px 13px;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.topic-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 45px rgba(15, 23, 42, 0.12);
+  border-color: var(--accent-soft);
+}
+
+.topic-card.locked {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.lock-badge {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  background: #fee2e2;
+  color: #b91c1c;
+  padding: 5px 9px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 9px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  background: #dcfce7;
+  color: #15803d;
+  margin-left: 6px;
+}
+
+.topic-detail {
+  margin-top: 20px;
+  display: none;
+  animation: fadeIn 0.22s ease forwards;
+}
+
+.section {
+  background: #fff;
+  padding: 16px 18px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-subtle);
+  margin-bottom: 14px;
+}
+
+.section h3 {
+  margin-top: 0;
+  margin-bottom: 8px;
+}
+
+.small-muted {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+/* MCQs */
+.mcq-card {
+  background: #fff7f2;
+  padding: 11px 12px;
+  border-radius: 12px;
+  margin-bottom: 9px;
+  border: 1px solid #fed7aa;
+}
+
+.mcq-q {
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.mcq-options label {
+  display: block;
+  padding: 7px 8px;
+  border-radius: 9px;
+  background: #fff;
+  border: 1px solid #f3e2d7;
+  font-size: 13px;
+  cursor: pointer;
+  margin-bottom: 5px;
+}
+
+.mcq-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.notes textarea {
+  height: 120px;
+  resize: none;
+}
+
+/* ================================
+   STUDY HUB (studyhub.html)
+   ================================ */
+
+.score-box {
+  background: #fff;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-subtle);
+  padding: 18px 20px;
+  text-align: center;
+  box-shadow: var(--shadow-soft);
+}
+
+.question-card {
+  background: #fff7f2;
+  border-radius: var(--radius-lg);
+  border: 1px solid #fed7aa;
+  padding: 16px 18px;
+  margin-bottom: 14px;
+}
+
+.hidden {
+  display: none;
+}
+
+/* -------------------------------
+   QUIZ PAGE – POLISHED UI
+-------------------------------- */
+
+.quiz-wrapper {
+    width: 100%;              /* 🔥 allow full width */
+    max-width: none;          /* 🔥 remove constraint */
+    margin-top: 10px;
+}
+
+
+.quiz-box {
+    background: #ffffff;
+    padding: 28px 32px;
+    border-radius: 20px;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.06);
+    border: 1px solid #f2e4d8;
+    margin-bottom: 24px;
+}
+
+.form-row {
+    margin-bottom: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-row label {
+    font-size: 15px;
+    font-weight: 600;
+    color: #353c4e;
+}
+
+.form-row select {
+    padding: 12px 14px;
+    border-radius: 14px;
+    border: 1px solid #ddd2c7;
+    background: #fdfbf8;
+    font-size: 15px;
+    outline: none;
+    transition: 0.2s;
+}
+
+.form-row select:focus {
+    border-color: #ff7b3a;
+    box-shadow: 0 0 0 3px rgba(255, 123, 58, 0.2);
+}
+
+.btn-group {
+    display: flex;
+    gap: 16px;
+    margin-top: 10px;
+}
+
+.primary-btn {
+    background: #ff7b3a;
+    color: white;
+    padding: 12px 22px;
+    border-radius: 14px;
+    font-size: 15px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+}
+
+.primary-btn:hover {
+    background: #f26122;
+}
+
+.secondary-btn {
+    background: #ffe4d2;
+    color: #d44800;
+    padding: 12px 22px;
+    border-radius: 14px;
+    font-size: 15px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+}
+
+.secondary-btn:hover {
+    background: #ffd3bb;
+}
+
+#quizContainer .question-card {
+    margin-bottom: 16px;
+    border-radius: 18px;
+    background: #fffaf6;
+    border: 1px solid #f3dcc8;
+    padding: 18px 20px;
+}
+
+/* ===============================
+   PAGE SPACING — GLOBAL STANDARD
+================================ */
+
+.page,
+.main,
+.main-container,
+.chat-page,
+.planner-container {      /* sidebar width */
+  padding: 32px 40px;     /* 🔥 SAME spacing as Chat */
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+
+/* ================================
+   CHAT PAGE (chat.html)
+   ================================ */
+
+/* ===============================
+   CHAT LAYOUT — FULL WIDTH
+================================ */
+
+.chat-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Wrap messages + input */
+.chat-wrapper {
+  max-width: 100%;
+  width: 100%;
+}
+
+/* Messages area */
+.messages-box {
+  width: 100%;
+  height: 70vh;                 /* Tall chat area */
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 20px;
+  overflow-y: auto;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+  margin-bottom: 14px;
+}
+
+/* Input row */
+.input-area {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+
+/* Input stretches fully */
+.input-area input {
+  flex: 1;                      /* 🔥 makes it LONG */
+  padding: 14px 18px;
+  border-radius: 999px;
+  border: 1px solid #e5e7eb;
+  font-size: 15px;
+}
+
+/* Send button */
+.input-area button {
+  padding: 14px 26px;
+  border-radius: 999px;
+  border: none;
+  background: #ff8a3d;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.input-area button:hover {
+  background: #e76f23;
+}
+
+
+/* ================================
+   RESPONSIVE
+   ================================ */
+
+@media (max-width: 900px) {
+
+
+  .sidebar-nav {
+    flex-direction: row;
+    gap: 6px;
+  }
+
+  .page,
+.main,
+.main-container,
+.chat-page,
+.profile-page,
+.notes-page,
+.studyhub-page {
+  margin-left: 0;
+  width: 100%;
+  padding: 20px 16px;
+}
+
+
+  .sidebar-footer {
+    display: none;
+  }
+
+  .main-container,
+  .main,
+  .chat-container {
+    margin-left: 0;
+    max-width: 100%;
+    padding: 20px 16px 18px;
+  }
+
+  .learning-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+/* ===============================
+   CHAT — FORCE FULL WIDTH
+================================ */
+
+.chat-page {
+  width: 100%;
+}
+
+/* Wrapper must stretch */
+.chat-wrapper {
+  width: 100% !important;
+  max-width: none !important;   /* 🔥 THIS IS THE KEY */
+}
+
+/* Messages box full width */
+.messages-box {
+  width: 100% !important;
+  max-width: none !important;
+}
+
+/* Input row full width */
+.input-area {
+  width: 100%;
+}
+
+/* Input must stretch */
+.input-area input {
+  flex: 1;
+  width: 100%;
+}
+
+
+/* ===============================
+   STUDY HUB — FULL WIDTH FORM
+================================ */
+
+.studyhub-page,
+.studyhub-container {
+  width: 100%;
+}
+
+/* Main quiz card */
+.quiz-card,
+.quiz-container {
+  width: 100%;
+  max-width: none !important;   /* 🔥 THIS IS THE KEY */
+}
+
+/* ===============================
+   PAGE TITLES — GLOBAL STANDARD
+================================ */
+
+.page-title {
+  font-size: 26px;        /* same as Chat */
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 18px;   /* same spacing as Chat */
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+
+/* =========================
+   PROFILE PAGE ONLY
+========================= */
+
+/* ================= PAGE ================= */
+.profile-page {
+  padding: 0; /* handled globally */
+}
+
+/* ================= GRID ================= */
+.profile-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  align-items: stretch;
+}
+
+/* ================= CARD BASE ================= */
+.profile-grid .card {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 22px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+  border: 1px solid #f1f1f1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* ================= CARD SIZES ================= */
+.profile-summary,
+.wide-card,
+.compact-card,
+.ai-card {
+  grid-column: span 1;
+}
+
+/* ================= PROFILE SUMMARY ================= */
+.profile-summary {
+  text-align: center;
+}
+
+.profile-summary .avatar {
+  font-size: 48px;
+  margin-bottom: 8px;
+}
+
+.profile-summary h2 {
+  margin: 8px 0 4px;
+}
+
+.profile-summary .muted {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.profile-meta {
+  margin: 14px 0;
+  font-size: 14px;
+}
+
+/* ================= LONG CONTENT CARDS ================= */
+.wide-card {
+  justify-content: center;
+}
+
+/* ================= AI RECOMMENDATION ================= */
+.ai-card {
+  background: linear-gradient(135deg, #fff7f0, #ffffff);
+  border-left: 5px solid #ff7a18;
+}
+
+.ai-list {
+  list-style: none;
+  padding: 0;
+  margin: 16px 0;
+}
+
+.ai-list li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+  font-size: 14px;
+}
+
+.ai-tag {
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+.ai-tag.weak {
+  background: #ffe5e5;
+  color: #d32f2f;
+}
+
+.ai-tag.practice {
+  background: #e3f2fd;
+  color: #1565c0;
+}
+
+.ai-tag.next {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.ai-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 16px;
+}
+
+.ai-note {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* ================= COMPACT CARD ================= */
+.compact-card {
+  background: #fafafa;
+  border: 1px dashed #e5e7eb;
+  padding: 18px;
+}
+
+/* ================= HEADINGS ================= */
+.profile-grid h3 {
+  font-size: 16px;
+  margin-bottom: 12px;
+}
+
+/* ================= INFO LIST ================= */
+.info-list {
+  list-style: none;
+  padding: 0;
+}
+
+.info-list li {
+  font-size: 14px;
+  margin-bottom: 6px;
+  line-height: 1.4;
+}
+
+/* ================= PROGRESS STATS ================= */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.stat-box {
+  background: #f8f9fb;
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* ================= BUTTONS ================= */
+.settings-list {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.compact-card button {
+  padding: 8px 14px;
+  font-size: 14px;
+  border-radius: 10px;
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 1024px) {
+  .profile-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .profile-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ================= PAGE OFFSET ================= */
+
+
+
+
+/* ===== Account Settings – stacked buttons ===== */
+.account-settings,
+.compact-card {
+  justify-content: space-between;
+}
+
+/* Button stack */
+.settings-list {
+  display: flex;
+  flex-direction: column;   /* 🔥 STACK */
+  gap: 14px;
+  margin-top: auto;         /* 🔥 PUSH TO BOTTOM */
+}
+
+/* Full-width buttons */
+.settings-list button {
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 15px;
+  border-radius: 12px;
+}
+/* ===============================
+   REMOVE DASHBOARD ILLUSTRATION
+   FROM NOTES PAGE
+================================ */
+
+.notes-wrapper::before,
+.notes-wrapper::after,
+.page::before,
+.page::after {
+  display: none !important;
+  content: none !important;
+  background: none !important;
+}
+/* ===============================
+   SUPER NOTES – FOCUS MODE
+================================ */
+
+.main-container {
+  padding: 32px 40px;
+  min-height: 100vh;
+}
+
+
+
+
+
+/* TOP TOOLBAR */
+.notes-toolbar {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr) auto;
+  gap: 18px;
+  align-items: end;
+  margin-bottom: 22px;
+}
+
+.toolbar-group label {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.generate-btn {
+  height: 44px;
+  margin-top: 22px;
+  white-space: nowrap;
+}
+
+/* NOTES READER */
+.notes-reader {
+  min-height: 560px;
+  padding: 28px 30px;
+}
+
+/* HEADER */
+.notes-header {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+/* CONTENT */
+#notesContent {
+  font-size: 16px;
+  line-height: 1.9;
+  color: #111827;
+}
+
+/* LIST STYLE */
+#notesContent ul {
+  padding-left: 20px;
+}
+
+#notesContent li {
+  margin-bottom: 10px;
+}
+
+/* REMOVE ILLUSTRATIONS COMPLETELY */
+.notes-page::before,
+.notes-page::after {
+  display: none !important;
+  content: none !important;
+}
+
+/* MOBILE */
+@media (max-width: 900px) {
+  .notes-toolbar {
+    grid-template-columns: 1fr;
+  }
+
+  .generate-btn {
+    width: 100%;
+  }
+
+  .notes-reader {
+    padding: 20px;
+  }
+}
+.notes-controls {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr) auto;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.notes-display {
+  min-height: 420px;
+}
+
+.notes-header {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.note-paragraph {
+  font-size: 16px;
+  line-height: 1.8;
+  text-align: justify;
+  color: #333;
+  white-space: pre-line;
+}
+
+.note-list li {
+  margin-bottom: 8px;
+}
+.note-paragraph {
+  font-size: 16px;
+  line-height: 1.9;
+  text-align: justify;
+  white-space: pre-line;
+  color: #222;
+}
+.note-paragraph {
+  font-size: 16px;
+  line-height: 1.9;
+  color: #2c2c2c;
+}
+
+.note-paragraph p {
+  margin-bottom: 18px;
+  text-align: justify;
+}
+
+.note-list {
+  padding-left: 20px;
+}
+
+.note-list li {
+  margin-bottom: 10px;
+  line-height: 1.6;
+}
+.notes-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.pdf-btn {
+  background-color: #2d6cdf;
+  color: #fff;
+  font-size: 14px;
+  padding: 6px 12px;
+  border-radius: 6px;
+}
+
+.pdf-btn:hover {
+  background-color: #1f4fbf;
+}
+/* NCERT SECTION */
+.ncert-section {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid #eee;
+}
+
+.ncert-section h3 {
+  margin-bottom: 12px;
+  font-size: 16px;
+}
+
+.ncert-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.ncert-row a {
+  color: #ff7b3a;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.ncert-row a:hover {
+  text-decoration: underline;
+}
+
+/* ===============================
+   FIX GAP BETWEEN SIDEBAR & CONTENT
+   =============================== */
+
+/* Reduce left spacing only */
+.page,
+.main,
+.main-container,
+.chat-page,
+.profile-page {
+  margin-left: 260px;     /* keep equal to sidebar */
+  padding-left: 24px;    /* 🔥 reduce horizontal gap */
+}
+
+/* Profile page extra safety */
+.profile-grid {
+  margin-left: 0;
+}
+
+/* Remove accidental inner offset */
+.profile-page .card {
+  margin-left: 0;
+}
+
+/* ===============================
+   PROFILE PAGE – COMPACT MODE
+   =============================== */
+
+/* Reduce grid gap */
+.profile-grid {
+  gap: 18px;
+}
+
+/* Reduce card padding */
+.profile-grid .card {
+  padding: 16px 18px;     /* was ~22px */
+  border-radius: 14px;
+}
+
+/* Profile summary */
+.profile-summary h2 {
+  font-size: 18px;
+}
+
+.profile-summary .muted {
+  font-size: 13px;
+}
+
+/* Reduce email + meta text */
+.profile-meta,
+.profile-grid p,
+.profile-grid li {
+  font-size: 13px;
+}
+
+/* Learning preferences text */
+.profile-grid strong {
+  font-size: 13px;
+}
+
+/* Progress snapshot boxes */
+.stat-box {
+  padding: 12px;
+}
+
+.stat-value {
+  font-size: 18px;
+}
+
+.stat-label {
+  font-size: 11px;
+}
+
+/* Study recommendations spacing */
+.ai-list li {
+  padding: 6px 0;
+  font-size: 13px;
+}
+
+/* Account settings buttons */
+.settings-list button {
+  padding: 10px 14px;
+  font-size: 14px;
+  border-radius: 10px;
+}
+
+/* ===============================
+   PROFILE PAGE – RIGHT GAP FIX
+   =============================== */
+
+/* Add breathing space from scrollbar */
+.main,
+.main-container,
+.page {
+  padding-right: 48px;          /* 👈 gap from scrollbar */
+}
+
+/* Prevent cards from stretching too wide */
+.profile-grid {
+  max-width: 1200px;            /* 👈 controls content width */
+}
+
+
+/* ===============================
+   FIX: Sidebar → Planner spacing
+   =============================== */
+
+
+
+
+.planner-page,
+.planner-container {
+  background: var(--bg); /* same as Dashboard / Profile / Notes */
+}
+
+
+/* ======================================
+   SMART NOTES — MATCH REVISION PLANNER
+====================================== */
+
+/* Page container spacing */
+.notes-page,
+.notes-wrapper,
+.notes-container {
+  padding-top: 20px;              /* reduce top heaviness */
+}
+
+/* Title spacing (Smart Notes heading) */
+.notes-page h1,
+.notes-page h2,
+.notes-title {
+  margin-bottom: 18px;           /* same rhythm as Planner */
+}
+
+/* Cards spacing */
+.notes-card,
+.smart-notes-card,
+.notes-reader,
+.notes-controls {
+  padding: 20px 22px;            /* tighter like Planner */
+  border-radius: 18px;
+}
+
+/* Space between cards */
+.notes-wrapper > .card,
+.notes-wrapper > div {
+  margin-bottom: 18px;           /* same vertical gap */
+}
+
+/* Subject / Topic selector box */
+.notes-toolbar,
+.notes-controls {
+  margin-bottom: 18px;
+  gap: 16px;
+}
+
+/* Notes content box height control */
+.notes-reader,
+.notes-display {
+  min-height: 420px;             /* not oversized */
+}
+
+/* Text size consistency */
+#notesContent,
+.note-paragraph {
+  font-size: 15px;               /* same as Planner text */
+  line-height: 1.8;
+}
+
+/* Section header inside notes */
+.notes-header {
+  font-size: 18px;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+}
+
+
+.page-title {
+  padding: 24px 5px 15px;
+  margin-bottom: 18px;
+}
+
+/* DASHBOARD HEADER SPACING */
+.header {
+  padding-top: 14px;      /* space from top */
+  padding-bottom: 10px;   /* space below title */
+  margin-bottom: 22px;    /* space before cards */
+}
+
+/* DASHBOARD HEADER SPACING */
+.page-title {
+  padding-top: 14px;      /* space from top */
+  padding-bottom: 10px;   /* space below title */
+  margin-bottom: 22px;    /* space before cards */
+}
+
+/* ===============================
+   LOADING SKELETONS
+================================ */
+
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: #f1f5f9;
+  border-radius: 10px;
+}
+
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.6),
+    transparent
+  );
+  animation: shimmer 1.4s infinite;
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Sizes */
+.skeleton-line {
+  height: 14px;
+  margin-bottom: 10px;
+}
+
+.skeleton-line.short {
+  width: 40%;
+}
+
+.skeleton-line.medium {
+  width: 65%;
+}
+
+.skeleton-line.long {
+  width: 100%;
+}
+
+.skeleton-circle {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  margin: auto;
+}
+

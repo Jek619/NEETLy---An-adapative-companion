@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEETly – Profile Setup</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* (unchanged styles) */
+    </style>
+</head>
+
+<body>
+
+    <!-- UPDATED SIDEBAR -->
+    <div class="sidebar">
+        <div class="logo">
+            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135755.png"> NEETly System
+        </div>
+
+        <div class="menu-item"><a href="dashboard.html">Dashboard</a></div>
+        <div class="menu-item"><a href="studyhub.html">Study Hub</a></div>
+        <div class="menu-item"><a href="chat.html">Chat Assistant</a></div>
+        <div class="menu-item"><a href="planner.html">Revision Planner</a></div>
+    </div>
+
+    <!-- MAIN CONTENT (UNCHANGED) -->
+    <div class="main">
+
+        <div class="title">🧠 Adaptive Profile Setup</div>
+
+        <div class="card">
+            <h2>Set Up Your Learning Preferences</h2>
+
+            <!-- your existing form preserved -->
+            <label>Subject:</label>
+            <select id="subjectSelect">
+                <option value="">Select Subject</option>
+                <option>Physics</option>
+                <option>Chemistry</option>
+                <option>Biology</option>
+            </select>
+
+            <label>Knowledge Level:</label>
+            <div class="radio-group">
+                <label><input type="radio" name="lvl" value="Beginner"> Beginner</label>
+                <label><input type="radio" name="lvl" value="Intermediate"> Intermediate</label>
+                <label><input type="radio" name="lvl" value="Advanced"> Advanced</label>
+            </div>
+
+            <label>Preferred Learning Style:</label>
+            <select id="styleSelect">
+                <option value="">Select Style</option>
+                <option>Visual (Diagrams)</option>
+                <option>Text Explanation</option>
+                <option>Video Lessons</option>
+            </select>
+
+            <button class="btn" onclick="saveProfile()">Save Profile</button>
+
+            <div id="successBox" class="success-box">✔ Profile Saved Successfully!</div>
+        </div>
+    </div>
+
+<script>
+  /* unchanged JS */
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const SUPABASE_URL = "https://jhtlocpstvvemmjmxdsf.supabase.co";
+  const SUPABASE_ANON_KEY =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpodGxvY3BzdHZ2ZW1tam14ZHNmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUzNzE3MDQsImV4cCI6MjA4MDk0NzcwNH0.yhxGHTb1HHCKeDPo5g9SvH6Zgrhr-fx_McXhV7oDhTs";
+
+  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  // Simple auth guard: if no session → back to login
+  (async () => {
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) {
+      window.location.href = "index.html";
+    }
+  })();
+
+  async function loadProfile() {
+  const user = await getCurrentUser();
+  if (!user) return;
+
+  const { data, error } = await sb
+    .from("profiles")
+    .select("*")
+    .eq("id", user.id)
+    .single();
+
+  // if no profile yet, you can insert one
+  if (!data) {
+    await sb.from("profiles").insert({
+      id: user.id,
+      full_name: user.user_metadata?.full_name || "NEETly Student"
+    });
+  }
+}
+
+</script>
+
+
+</body>
+</html>

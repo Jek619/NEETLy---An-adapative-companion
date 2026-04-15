@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Profile | NEETly</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="neetly.css">
+</head>
+
+<body>
+
+<!-- ===== SIDEBAR ===== -->
+<div class="sidebar">
+  <div class="sidebar-top">
+    <div class="welcome-box">
+      <span class="welcome-label">Welcome</span>
+      <span class="welcome-name" id="welcomeUser">USER</span>
+    </div>
+  </div>
+
+  <nav class="menu">
+    <a href="dashboard.html" class="menu-item">Dashboard</a>
+    <a href="learn.html" class="menu-item">Learn</a>
+    <a href="studyhub.html" class="menu-item">Study Hub</a>
+    <a href="chat.html" class="menu-item">Chat Assistant</a>
+    <a href="notes.html" class="menu-item">Notes</a>
+    <a href="planner.html" class="menu-item">Revision Planner</a>
+  </nav>
+
+  <div class="sidebar-bottom">
+    <a href="profile.html" class="menu-item active">Profile</a>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </div>
+</div>
+
+<!-- ===== PAGE ===== -->
+<div class="page profile-page">
+  <h1 class="page-title">👤 My Profile</h1>
+
+  <div class="profile-grid">
+
+    <!-- PROFILE SUMMARY -->
+    <div class="card profile-summary">
+      <div class="avatar">👤</div>
+      <h2 id="profileName">Loading...</h2>
+      <p class="muted">NEET Aspirant • NEET 2026</p>
+
+      <div class="profile-meta">
+        <div><strong>Email:</strong> <span id="profileEmail">---</span></div>
+      </div>
+    </div>
+
+    <!-- LEARNING PREFERENCES -->
+    <div class="card wide-card">
+      <h3>📚 Learning Preferences</h3>
+      <ul class="info-list">
+        <li><strong>Strong Subject:</strong> <span id="strongSubject">-</span></li>
+        <li><strong>Weak Subject:</strong> <span id="weakSubject">-</span></li>
+        <li><strong>Daily Study Goal:</strong> 4 hours</li>
+        <li><strong>Preferred Language:</strong> English</li>
+      </ul>
+    </div>
+
+    <!-- PROGRESS SNAPSHOT -->
+    <div class="card stats-card wide-card">
+      <h3>📊 Progress Snapshot</h3>
+      <div class="stats-grid">
+        <div class="stat-box">
+          <span class="stat-value" id="quizCount">0</span>
+          <span class="stat-label">Quizzes</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-value" id="accuracyValue">0%</span>
+          <span class="stat-label">Accuracy</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-value" id="topicCount">0</span>
+          <span class="stat-label">Topics</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-value" id="streakValue">0</span>
+          <span class="stat-label">Streak</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI RECOMMENDATIONS -->
+    <div class="card ai-card">
+      <h3>🧠 Study Recommendations</h3>
+      <ul class="ai-list">
+        <li>Weak Area: <strong id="aiWeakTopic">-</strong></li>
+        <li>Practice: <strong id="aiPracticeTopic">-</strong></li>
+        <li>Next Quiz: <strong id="aiNextQuiz">-</strong></li>
+      </ul>
+
+      <div class="ai-footer">
+        <span class="ai-note">Based on your quiz history</span>
+      </div>
+    </div>
+
+    <!-- ACCOUNT SETTINGS -->
+    <div class="card compact-card">
+      <h3>⚙️ Account Settings</h3>
+      <div class="settings-list">
+        <button class="btn-outline" onclick="changePassword()">Change Password</button>
+        <button class="btn-danger" onclick="logout()">Logout</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+
+<!-- ===== SUPABASE + LOGIC ===== -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = "https://jhtlocpstvvemmjmxdsf.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpodGxvY3BzdHZ2ZW1tam14ZHNmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUzNzE3MDQsImV4cCI6MjA4MDk0NzcwNH0.yhxGHTb1HHCKeDPo5g9SvH6Zgrhr-fx_McXhV7oDhTs";
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+async function logout() {
+  await sb.auth.signOut();
+  window.location.href = "index.html";
+}
+
+async function logout() {
+  await sb.auth.signOut();
+  window.location.href = "index.html";
+}
+
+
+
+async function changePassword() {
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) {
+    alert("Please login again.");
+    window.location.href = "index.html";
+    return;
+  }
+
+  const email = session.user.email;
+
+  const { error } = await sb.auth.resetPasswordForEmail(email, {
+    redirectTo: window.location.origin + "/reset-password.html"
+  });
+
+  if (error) {
+    alert("Error sending reset link: " + error.message);
+  } else {
+    alert("Password reset link sent to your email 📩");
+  }
+}
+
+
+(async () => {
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) return window.location.href = "index.html";
+
+  const user = session.user;
+  console.log("AUTH USER ID:", user.id);
+
+  const name =
+    user.user_metadata?.full_name ||
+    user.email.split("@")[0];
+
+  document.getElementById("welcomeUser").textContent = name.toUpperCase();
+  document.getElementById("profileName").textContent = name;
+  document.getElementById("profileEmail").textContent = user.email;
+
+  loadPerformance(user.id);
+})();
+
+async function loadPerformance(userId) {
+  const { data } = await sb
+    .from("quiz_results")
+    .select("*")
+    .eq("user_id", userId);
+
+  console.log("Raw quiz data:", data);
+  const quizDates = [
+  ...new Set(
+    data.map(q =>
+      new Date(q.created_at).toISOString().split("T")[0]
+    )
+  )
+];
+
+// 2️⃣ Calculate streak
+function calculateStreak(dates) {
+  let streak = 0;
+  let current = new Date();
+
+  while (true) {
+    const day = current.toISOString().split("T")[0];
+
+    if (dates.includes(day)) {
+      streak++;
+      current.setDate(current.getDate() - 1);
+    } else {
+      break;
+    }
+  }
+
+  return streak;
+}
+
+const streak = calculateStreak(quizDates);
+  if (!data || !data.length) return;
+
+  const cleanData = data
+    .filter(q => q.topic_id && typeof q.percent === "number")
+    .map(q => ({
+      subject: q.topic_id,
+      topic: q.topic_id,
+      percentage: q.percent
+    }));
+
+  if (!cleanData.length) return;
+
+  const subjects = {};
+  const topics = new Set();
+  let totalPercentage = 0;
+
+  cleanData.forEach(q => {
+    topics.add(q.topic);
+    totalPercentage += q.percentage;
+
+    subjects[q.subject] ??= { sum: 0, count: 0 };
+    subjects[q.subject].sum += q.percentage;
+    subjects[q.subject].count++;
+  });
+
+  const accuracy = Math.round(totalPercentage / cleanData.length);
+
+  const sorted = Object.entries(subjects)
+    .map(([subject, v]) => ({ subject, avg: v.sum / v.count }))
+    .sort((a, b) => b.avg - a.avg);
+
+  document.getElementById("quizCount").textContent = cleanData.length;
+  document.getElementById("accuracyValue").textContent = accuracy + "%";
+  document.getElementById("topicCount").textContent = topics.size;
+  document.getElementById("streakValue").textContent =
+  streak > 0 ? `${streak} 🔥` : "0";
+
+
+  const strong = sorted[0]?.subject || "Not enough data";
+  const weak = sorted.at(-1)?.subject || "Not enough data";
+
+  document.getElementById("strongSubject").textContent = strong;
+  document.getElementById("weakSubject").textContent = weak;
+
+  const weakTopics = cleanData
+    .filter(q => q.subject === weak)
+    .sort((a, b) => a.percentage - b.percentage);
+
+  document.getElementById("aiWeakTopic").textContent =
+    weakTopics[0]?.topic || "Revision";
+
+  document.getElementById("aiPracticeTopic").textContent =
+    weakTopics[1]?.topic || "Practice basics";
+
+  document.getElementById("aiNextQuiz").textContent =
+    `${weak} – Medium Level`;
+}
+
+</script>
+
+
+</body>
+</html>

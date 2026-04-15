@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+motor
+pydantic
+openai
+numpy
+pdfminer.six
+python-multipart
+python-dotenv

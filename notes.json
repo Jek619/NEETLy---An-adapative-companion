@@ -1,0 +1,19 @@
+{
+  "Biology": {
+    "Cell Division": {
+      "key_points": [
+        "Occurs in all living organisms",
+        "Includes mitosis and meiosis"
+      ],
+      "definitions": [
+        "Cell Division: Formation of new cells"
+      ],
+      "pyqs": [
+        "Which phase of mitosis shows alignment?"
+      ],
+      "revision": [
+        "Two types: mitosis & meiosis"
+      ]
+    }
+  }
+}

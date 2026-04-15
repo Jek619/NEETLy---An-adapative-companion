@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Admin Login - NEETly</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+body{
+  margin:0;
+  font-family:Inter,sans-serif;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:linear-gradient(135deg,#111827,#1f2937);
+}
+
+.card{
+  background:#1f2937;
+  padding:40px;
+  border-radius:12px;
+  width:350px;
+  color:white;
+}
+
+input{
+  width:100%;
+  padding:10px;
+  margin-bottom:15px;
+  border:none;
+  border-radius:6px;
+}
+
+button{
+  width:100%;
+  padding:10px;
+  background:#f97316;
+  color:white;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+  <h2>Admin Login</h2>
+
+  <form autocomplete="off" onsubmit="event.preventDefault(); adminLogin();">
+
+  <!-- Chrome Autofill Blocker -->
+  <input type="text" style="display:none">
+  <input type="password" style="display:none">
+
+  <input 
+    type="email" 
+    id="email" 
+    name="adminFakeEmail"
+    placeholder="Admin Email"
+    autocomplete="off"
+    autocorrect="off"
+    autocapitalize="off"
+    spellcheck="false">
+
+  <input 
+    type="password" 
+    id="password"
+    name="adminFakePassword"
+    placeholder="Password"
+    autocomplete="new-password">
+
+  <button type="submit">Login</button>
+
+</form>
+
+  <p style="margin-top:15px; font-size:14px;">
+    <a href="index.html" style="color:#9ca3af;">Back to Student Login</a>
+  </p>
+</div>
+
+<script>
+const sb = supabase.createClient(
+  "https://jhtlocpstvvemmjmxdsf.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpodGxvY3BzdHZ2ZW1tam14ZHNmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUzNzE3MDQsImV4cCI6MjA4MDk0NzcwNH0.yhxGHTb1HHCKeDPo5g9SvH6Zgrhr-fx_McXhV7oDhTs"
+);
+
+// ✅ Clear fields safely on load
+window.addEventListener("load", () => {
+  document.getElementById("email").value = "";
+  document.getElementById("password").value = "";
+});
+
+// ✅ Prevent already logged-in users from seeing login page
+(async () => {
+  const { data: { session } } = await sb.auth.getSession();
+
+  if (session) {
+    // Check if actually admin
+    const { data: profile } = await sb
+      .from("profiles")
+      .select("role")
+      .eq("id", session.user.id)
+      .single();
+
+    if (profile && profile.role === "admin") {
+      window.location.href = "admin.html";
+    }
+  }
+})();
+
+async function adminLogin(){
+
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
+
+  if (!email || !password) {
+    alert("Email and Password required");
+    return;
+  }
+
+  const { data, error } = await sb.auth.signInWithPassword({
+    email,
+    password
+  });
+
+  if(error){
+    alert("Invalid login credentials");
+    return;
+  }
+
+  // 🔐 Secure Role Check
+  const { data: profile, error: profileError } = await sb
+    .from("profiles")
+    .select("role")
+    .eq("id", data.user.id)
+    .single();
+
+  if(profileError || !profile){
+    await sb.auth.signOut();
+    alert("Profile not found.");
+    return;
+  }
+
+  if(profile.role !== "admin"){
+    await sb.auth.signOut();
+    alert("Access denied. Not an admin.");
+    return;
+  }
+
+  // ✅ Success
+  window.location.href = "admin.html";
+}
+</script>
+
+</body>
+</html>

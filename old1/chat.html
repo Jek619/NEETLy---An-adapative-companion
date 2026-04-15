@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEETly Chat Assistant</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="neetly.css">
+
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <div class="logo">
+            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135755.png"> NEETly System
+        </div>
+
+        <div class="menu-item"><a href="dashboard.html">Dashboard</a></div>
+        <div class="menu-item"><a href="learn.html">Learn</a></div>
+        <div class="menu-item"><a href="studyhub.html">Study Hub</a></div>
+        <div class="menu-item active"><a href="chat.html">Chat Assistant</a></div>
+        <div class="menu-item"><a href="planner.html">Revision Planner</a></div>
+    </div>
+
+    <!-- CHAT PANEL -->
+    <div class="chat-container">
+
+        <div class="header">🤖 NEETly Chat Assistant</div>
+
+        <div id="messages" class="messages-box"></div>
+
+        <div class="input-area">
+            <input id="userInput" type="text" placeholder="Ask anything...">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+
+    </div>
+
+
+<!-- ==========================
+      SUPABASE + CHAT LOGIC
+=========================== -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+
+    const SUPABASE_URL = "https://jhtlocpstvvemmjmxdsf.supabase.co";
+    const SUPABASE_ANON_KEY =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpodGxvY3BzdHZ2ZW1tam14ZHNmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUzNzE3MDQsImV4cCI6MjA4MDk0NzcwNH0.yhxGHTb1HHCKeDPo5g9SvH6Zgrhr-fx_McXhV7oDhTs";
+
+    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    /* ----------------------------------------
+       AUTH GUARD — Redirect if logged out
+    ------------------------------------------*/
+    let CURRENT_USER = null;
+
+    (async () => {
+        const { data } = await sb.auth.getSession();
+        if (!data.session) {
+            window.location.href = "index.html";
+            return;
+        }
+        CURRENT_USER = data.session.user;
+    })();
+
+
+    /* -----------------------------
+         API ENDPOINT
+    ------------------------------*/
+    const API = "http://127.0.0.1:8000/api/chat";
+    const box = document.getElementById("messages");
+
+
+    /* ----------------------------------------
+         SAVE CHAT TO SUPABASE
+    ------------------------------------------*/
+    async function saveChatToDB(message, isBot) {
+        if (!CURRENT_USER) return;
+
+        try {
+            await sb.from("chat_history").insert({
+                user_id: CURRENT_USER.id,
+                message: message,
+                is_bot: isBot
+            });
+        } catch (err) {
+            console.error("Chat save error:", err);
+        }
+    }
+
+
+    /* ----------------------------------------
+         SEND MESSAGE (your existing logic)
+    ------------------------------------------*/
+    async function sendMessage() {
+        const input = document.getElementById("userInput");
+        const text = input.value.trim();
+        if (!text) return;
+
+        // USER MESSAGE
+        box.innerHTML += `<div class='msg-user'>${text}</div>`;
+        box.scrollTop = box.scrollHeight;
+
+        // Save user message to DB
+        saveChatToDB(text, false);
+
+        input.value = "";
+
+        try {
+            const res = await fetch(API, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message: text })
+            });
+
+            const data = await res.json();
+
+            // AI RESPONSE
+            box.innerHTML += `<div class='msg-ai'>${data.reply}</div>`;
+            box.scrollTop = box.scrollHeight;
+
+            // Save bot message to DB
+            saveChatToDB(data.reply, true);
+
+        } catch (err) {
+            box.innerHTML += `<div class='msg-ai' style="color:red;">Server error</div>`;
+        }
+    }
+
+</script>
+
+</body>
+</html>

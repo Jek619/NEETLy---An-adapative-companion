@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NEETly Chat Assistant</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="neetly.css">
+
+  <!-- CHAT UI ADDITIONS -->
+  <style>
+    /* ===============================
+       WHATSAPP STYLE CHAT
+    =============================== */
+
+    .chat-wrapper {
+      max-width: 900px;
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - 170px);
+    }
+
+    .messages-box {
+      flex: 1;
+      background: #efeae2;
+      border-radius: 18px;
+      padding: 18px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .msg {
+      max-width: 70%;
+      display: flex;
+      flex-direction: column;
+      font-size: 14px;
+    }
+
+    .msg-user {
+      align-self: flex-end;
+    }
+
+    .msg-ai {
+      align-self: flex-start;
+    }
+
+    .bubble {
+      padding: 10px 14px;
+      border-radius: 16px;
+      line-height: 1.45;
+      word-wrap: break-word;
+      white-space: pre-wrap;
+    }
+
+    .msg-user .bubble {
+      background: #dcf8c6;
+      border-top-right-radius: 4px;
+    }
+
+    .msg-ai .bubble {
+      background: #ffffff;
+      border-top-left-radius: 4px;
+    }
+
+    .time {
+      font-size: 10px;
+      color: #6b7280;
+      margin-top: 3px;
+      align-self: flex-end;
+    }
+
+    .input-area {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .input-area input {
+      flex: 1;
+      padding: 14px 18px;
+      border-radius: 999px;
+      border: 1px solid #e5e7eb;
+      font-size: 14px;
+    }
+
+    .input-area button {
+      background: #ff7b3a;
+      color: white;
+      border-radius: 999px;
+      padding: 14px 22px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+    }
+
+    .input-area button:hover {
+      background: #f26122;
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- SIDEBAR (unchanged) -->
+<div class="sidebar">
+  <div class="sidebar-top">
+    <div class="welcome-box">
+      <span class="welcome-label">Welcome</span>
+      <span class="welcome-name" id="welcomeUser">USER</span>
+    </div>
+  </div>
+
+ <nav class="menu">
+  <a href="dashboard.html" class="menu-item">Dashboard</a>
+  <a href="learn.html" class="menu-item">Learn</a>
+  <a href="studyhub.html" class="menu-item">Study Hub</a>
+  <a href="chat.html" class="menu-item active">Chat Assistant</a>
+  <a href="notes.html" class="menu-item">Notes</a>
+  <a href="planner.html" class="menu-item">Revision Planner</a>
+</nav>
+
+
+  <div class="sidebar-bottom">
+    <a href="profile.html" class="menu-item profile-link">
+      <span class="profile-badge">👤</span>
+      <span>Profile</span>
+    </a>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </div>
+</div>
+
+<!-- PAGE -->
+<div class="page chat-page">
+  <h1 class="page-title">🤖 Chat Assistant</h1>
+
+  <div class="chat-wrapper">
+    <div id="messages" class="messages-box"></div>
+
+    <div class="input-area">
+      <input id="userInput" type="text" placeholder="Ask anything..." />
+      <button onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==========================
+     SUPABASE + CHAT LOGIC
+=========================== -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const SUPABASE_URL = "https://jhtlocpstvvemmjmxdsf.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpodGxvY3BzdHZ2ZW1tam14ZHNmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUzNzE3MDQsImV4cCI6MjA4MDk0NzcwNH0.yhxGHTb1HHCKeDPo5g9SvH6Zgrhr-fx_McXhV7oDhTs";
+  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  const API = "http://127.0.0.1:8000/api/chat";
+  let CURRENT_USER = null;
+  const box = document.getElementById("messages");
+
+  function timeNow() {
+    return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }
+
+  function appendMessage(text, isBot) {
+    const div = document.createElement("div");
+    div.className = `msg ${isBot ? "msg-ai" : "msg-user"}`;
+
+    div.innerHTML = `
+      <div class="bubble">${text.replace(/\n/g, "<br>")}</div>
+      <span class="time">${timeNow()}</span>
+    `;
+
+    box.appendChild(div);
+    box.scrollTop = box.scrollHeight;
+  }
+
+  (async () => {
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) return location.href = "index.html";
+
+    CURRENT_USER = session.user;
+    document.getElementById("welcomeUser").innerText =
+      (CURRENT_USER.user_metadata?.full_name ||
+      CURRENT_USER.email.split("@")[0]).toUpperCase();
+
+    loadChatHistory();
+  })();
+
+  async function logout() {
+    await sb.auth.signOut();
+    location.href = "index.html";
+  }
+
+  async function saveMessage(message, isBot) {
+    await sb.from("chat_history").insert({
+      user_id: CURRENT_USER.id,
+      message,
+      is_bot: isBot
+    });
+  }
+
+  async function loadChatHistory() {
+    const { data } = await sb
+      .from("chat_history")
+      .select("*")
+      .eq("user_id", CURRENT_USER.id)
+      .order("created_at");
+
+    data.forEach(row => appendMessage(row.message, row.is_bot));
+  }
+
+  async function sendMessage() {
+    const input = document.getElementById("userInput");
+    const text = input.value.trim();
+    if (!text) return;
+
+    appendMessage(text, false);
+    input.value = "";
+    await saveMessage(text, false);
+
+    try {
+      const res = await fetch(API, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: text })
+      });
+
+      const data = await res.json();
+      appendMessage(data.reply, true);
+      await saveMessage(data.reply, true);
+
+    } catch {
+      appendMessage("⚠️ Server error", true);
+    }
+  }
+</script>
+
+</body>
+</html>

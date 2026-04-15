@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NEETly – Sign Up</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
+    body {
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #0d1226, #1a2b4c);
+    }
+
+    .container {
+      width: 400px;
+      background: rgba(255, 255, 255, 0.08);
+      padding: 35px;
+      border-radius: 18px;
+      backdrop-filter: blur(18px);
+      box-shadow: 0 12px 35px rgba(0,0,0,0.35);
+      animation: fade 0.8s ease;
+    }
+
+    @keyframes fade { from { opacity:0; transform: translateY(15px);} to { opacity:1; transform: translateY(0);} }
+
+    h2 { text-align: center; margin-bottom: 20px; color:#fff; }
+
+    label { color:#dfe6ff; font-size:14px; }
+
+    input {
+      width: 100%; padding: 12px; margin-top: 6px; border-radius: 10px;
+      background: rgba(255,255,255,0.12); border: none; color:#fff; font-size:15px;
+    }
+
+    .input-group { margin-bottom: 18px; }
+
+    .error { color:#ff6b6b; font-size:12px; margin-top:5px; min-height:14px; }
+    .success { color:#4ade80; font-size:12px; margin-top:5px; min-height:14px; }
+
+    .btn {
+      width:100%; padding: 12px; border:none; border-radius:10px; background:#4d79ff; color:white;
+      font-size:16px; cursor:pointer; font-weight:600; transition:0.3s;
+    }
+
+    .btn:hover { background:#3459cc; }
+
+    .switch {
+      text-align:center; margin-top:15px; color:#9fc3ff; cursor:pointer; font-size:14px;
+    }
+
+    .strength-meter { height:8px; border-radius:6px; background:rgba(255,255,255,0.2); overflow:hidden; margin-top:6px; }
+    .strength-meter div { height:100%; width:0%; background:#ff5757; transition:0.3s; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>NEETly Sign Up</h2>
+
+  <div class="input-group">
+    <label>Full Name</label>
+    <input type="text" id="name" placeholder="Enter your name" />
+    <div id="nameError" class="error"></div>
+  </div>
+
+  <div class="input-group">
+    <label>Email</label>
+    <input type="email" id="email" placeholder="Enter email" />
+    <div id="emailError" class="error"></div>
+  </div>
+
+  <div class="input-group">
+    <label>Password</label>
+    <input type="password" id="password" placeholder="Enter password" />
+    <div class="strength-meter"><div id="pwStrength"></div></div>
+    <div id="pwError" class="error"></div>
+  </div>
+
+  <div class="input-group">
+    <label>Confirm Password</label>
+    <input type="password" id="confirmPassword" placeholder="Re-enter password" />
+    <div id="confirmError" class="error"></div>
+  </div>
+
+  <button class="btn" onclick="validateSignup()">Sign Up</button>
+
+  <div class="switch" onclick="window.location.href='index.html'">Already have an account? Login</div>
+</div>
+
+<script>
+function validateSignup() {
+  let name = document.getElementById("name").value.trim();
+  let email = document.getElementById("email").value.trim();
+  let password = document.getElementById("password").value.trim();
+  let confirmPassword = document.getElementById("confirmPassword").value.trim();
+
+  let nameErr = document.getElementById("nameError");
+  let emailErr = document.getElementById("emailError");
+  let pwErr = document.getElementById("pwError");
+  let confirmErr = document.getElementById("confirmError");
+
+  let valid = true;
+
+  nameErr.textContent = emailErr.textContent = pwErr.textContent = confirmErr.textContent = "";
+
+  // Name validation
+  if(name === ""){
+    nameErr.textContent = "Name is required";
+    valid = false;
+  } else {
+    nameErr.textContent = "✓ Looks good";
+    nameErr.className = "success";
+  }
+
+  // Email validation
+  const emailPattern = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+  if(email === ""){
+    emailErr.textContent = "Email is required";
+    valid = false;
+  } else if(!emailPattern.test(email)){
+    emailErr.textContent = "Enter a valid email";
+    valid = false;
+  } else {
+    emailErr.textContent = "✓ Looks good";
+    emailErr.className = "success";
+  }
+
+  // Password validation & strength
+  let pwStrength = document.getElementById("pwStrength");
+  let strength = 0;
+  if(password.length >= 6) strength++;
+  if(/[A-Z]/.test(password)) strength++;
+  if(/[0-9]/.test(password)) strength++;
+  if(/[^A-Za-z0-9]/.test(password)) strength++;
+
+  pwStrength.style.width = (strength * 25) + "%";
+  pwStrength.style.background = strength >= 3 ? "#4ade80" : strength === 2 ? "#facc15" : "#ef4444";
+
+  if(password === ""){
+    pwErr.textContent = "Password is required";
+    valid = false;
+  } else if(password.length < 6){
+    pwErr.textContent = "Password must be at least 6 characters";
+    valid = false;
+  } else if(strength < 2){
+    pwErr.textContent = "Password is weak";
+    valid = false;
+  } else {
+    pwErr.textContent = "✓ Strong password";
+    pwErr.className = "success";
+  }
+
+  // Confirm password
+  if(confirmPassword === ""){
+    confirmErr.textContent = "Confirm your password";
+    valid = false;
+  } else if(confirmPassword !== password){
+    confirmErr.textContent = "Passwords do not match";
+    valid = false;
+  } else {
+    confirmErr.textContent = "✓ Passwords match";
+    confirmErr.className = "success";
+  }
+
+  if(valid){
+    alert("Sign Up Successful!");
+    window.location.href = "index.html"; // Redirect to login
+  }
+}
+
+// Optional: Real-time password strength
+document.getElementById("password").addEventListener("input", function(){
+  let pw = this.value;
+  let pwStrength = document.getElementById("pwStrength");
+  let strength = 0;
+  if(pw.length >= 6) strength++;
+  if(/[A-Z]/.test(pw)) strength++;
+  if(/[0-9]/.test(pw)) strength++;
+  if(/[^A-Za-z0-9]/.test(pw)) strength++;
+
+  pwStrength.style.width = (strength * 25) + "%";
+  pwStrength.style.background = strength >= 3 ? "#4ade80" : strength === 2 ? "#facc15" : "#ef4444";
+});
+</script>
+
+</body>
+</html>
